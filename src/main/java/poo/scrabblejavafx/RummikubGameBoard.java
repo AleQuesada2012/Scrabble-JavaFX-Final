@@ -51,6 +51,8 @@ public class RummikubGameBoard {
 
     private Button[][] botonesTablero;
 
+    private String[][] copiaPotenciadasPrevias;
+
     private int cantidadPreviaDeFichas;
     @FXML
     private AnchorPane rootPane;
@@ -307,8 +309,9 @@ public class RummikubGameBoard {
         botonPrevio = null;
         currentPlayerLabel.setText("Jugando: " + primerJugador.getNombre());
         setTableroInicial();
+        this.copiaPotenciadasPrevias = partida.getTablero().getMatrizFichas();
         setSoporteInicial(primerJugador);
-        // TODO cargarTableroTemporal();
+        // TODO cargarTableroTemporal(); se cambió por set tablero inicial ya que en la primera jugada no hay fichas.
         turnLabel.setText("Turno: " + turnoActual);
         drawTileButton.setText("Tomar ficha (" + pilaActual + ")");
         for (Jugador jugador : partida.getJugadores()) {
@@ -364,14 +367,12 @@ public class RummikubGameBoard {
         Jugador j1 = new Jugador();
         j1.setNombre(nombre1);
         j1.setFichasEnMano();
-        j1.crearVectorPuntos();
         partida.agregarjugador(j1);
         jugadores.add(j1);
 
         Jugador j2 = new Jugador();
         j2.setNombre(nombre2);
         j2.setFichasEnMano();
-        j2.crearVectorPuntos();
         partida.agregarjugador(j2);
         jugadores.add(j2);
 
@@ -379,7 +380,6 @@ public class RummikubGameBoard {
             Jugador j3 = new Jugador();
             j3.setNombre(nombre3);
             j3.setFichasEnMano();
-            j3.crearVectorPuntos();
             partida.agregarjugador(j3);
             jugadores.add(j3);
         }
@@ -388,7 +388,6 @@ public class RummikubGameBoard {
             Jugador j4 = new Jugador();
             j4.setNombre(nombre4);
             j4.setFichasEnMano();
-            j4.crearVectorPuntos();
             partida.agregarjugador(j4);
             jugadores.add(j4);
         }
@@ -467,43 +466,46 @@ public class RummikubGameBoard {
      * Recorre la matriz de botones y les cambia la apariencia (color y texto) para que representen correctamente la
      * matriz existente en la lógica del juego.
      */
-    /*
+
     private void cargarTableroTemporal() {
         Mesa tableroTemporal = partida.getTemporalMesa(); // matriz de fichas
-        System.out.println("Tablero actual");
-        tableroTemporal.imprimirMesa();
+        String[][] powerUps = tableroTemporal.getMatrizFichas(); // matriz de casillas potenciadas
+        System.out.println("Tablero temporal: ");
+        tableroTemporal.imprimirmatriz();
         int filaMesa = 0;
         int columnaMesa = 0;
         Ficha fichaActual;
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < 15; j++) {
                 Button botonActual = getButtonByRowColumnIndex(i, j, gameGrid);
-                fichaActual = tableroTemporal.getMatrizFichas()[i][j];
+                fichaActual = tableroTemporal.getTablero()[i][j];
                 if (fichaActual != null) {
-                    if(fichaActual.getNum() == 0) {
-                        botonActual.setText("C");
+                    //Poner la lógica de que se carguen como si fueran fichas
+                    if(fichaActual.getLetra() =='*') {
+                        botonActual.setText("");
                     }
                     else {
-                        botonActual.setText(Integer.toString(fichaActual.getNum()));
+                        botonActual.setText(String.valueOf(fichaActual.getLetra()));
                     }
+                    botonActual.setStyle("");
 
                     // cambiar el valor del arreglo de user Data para que marque que si contiene ficha
                     int[] infoAlmacenada = (int[]) botonActual.getUserData();
                     infoAlmacenada[2] = 1;
                     botonActual.setUserData(infoAlmacenada);
-
-                    // se cambia la apariencia del boton para que refleje la ficha que representa
-                    switch (fichaActual.getColor()) {
-                        case "N" -> botonActual.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5); -fx-text-fill: black;");
-                        case "A" -> botonActual.setStyle("-fx-background-color: rgba(0, 0, 255, 0.5); -fx-text-fill: black;");
-                        case "Y" -> botonActual.setStyle("-fx-background-color: rgba(255, 255, 0, 0.5); -fx-text-fill: black;");
-                        case "R" -> botonActual.setStyle("-fx-background-color: rgba(255, 0, 0, 0.5); -fx-text-fill: black;");
-                        case "comodin" -> botonActual.setStyle("-fx-background-color: rgba(0, 200, 200, 0.5); -fx-text-fill: black");
-                    }
                 }
                 else {
+                    String casillaPotenciada = powerUps[i][j];
+                    // se cambia la apariencia del boton para que refleje la ficha que representa
+                    switch (casillaPotenciada) {
+                        case "2L" -> botonActual.setStyle("-fx-background-color: rgba(255, 155, 0); -fx-text-fill: black;");
+                        case "2W" -> botonActual.setStyle("-fx-background-color: rgba(0, 255, 255, 0.7); -fx-text-fill: black;");
+                        case "3L" -> botonActual.setStyle("-fx-background-color: rgba(0, 0, 255); -fx-text-fill: black;");
+                        case "3W" -> botonActual.setStyle("-fx-background-color: rgba(255, 0, 0); -fx-text-fill: black;");
+                        case "" -> botonActual.setStyle("-fx-background-color: rgba(0, 204, 102, 0.8); -fx-text-fill: black");
+                    }
+
                     botonActual.setText("");
-                    botonActual.setStyle("");
                     int[] infoAlmacenada = (int[]) botonActual.getUserData();
                     infoAlmacenada[2] = 0;
                     botonActual.setUserData(infoAlmacenada);
@@ -517,43 +519,46 @@ public class RummikubGameBoard {
      * Recorre la matriz de botones y les cambia la apariencia (color y texto) para que representen correctamente la
      * matriz existente en la lógica del juego.
      */
-    /*
+
     private void cargarTableroValido() {
         Mesa tableroValido = partida.getTablero(); // matriz de fichas
-        System.out.println("Tablero Valido:");
-        tableroValido.imprimirMesa();
+        String[][] powerUps = tableroValido.getMatrizFichas(); // matriz de casillas potenciadas
+        System.out.println("Tablero temporal: ");
+        tableroValido.imprimirmatriz();
         int filaMesa = 0;
         int columnaMesa = 0;
         Ficha fichaActual;
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < 15; j++) {
                 Button botonActual = getButtonByRowColumnIndex(i, j, gameGrid);
-                fichaActual = tableroValido.getMatrizFichas()[i][j];
+                fichaActual = tableroValido.getTablero()[i][j];
                 if (fichaActual != null) {
-                    if(fichaActual.getNum() == 0) {
-                        botonActual.setText("C");
+                    //Poner la lógica de que se carguen como si fueran fichas
+                    if(fichaActual.getLetra() =='*') {
+                        botonActual.setText("");
                     }
                     else {
-                        botonActual.setText(Integer.toString(fichaActual.getNum()));
+                        botonActual.setText(String.valueOf(fichaActual.getLetra()));
                     }
+                    botonActual.setStyle("");
 
                     // cambiar el valor del arreglo de user Data para que marque que si contiene ficha
                     int[] infoAlmacenada = (int[]) botonActual.getUserData();
                     infoAlmacenada[2] = 1;
                     botonActual.setUserData(infoAlmacenada);
-
-                    // se cambia la apariencia del boton para que refleje la ficha que representa
-                    switch (fichaActual.getColor()) {
-                        case "N" -> botonActual.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5); -fx-text-fill: black;");
-                        case "A" -> botonActual.setStyle("-fx-background-color: rgba(0, 0, 255, 0.5); -fx-text-fill: black;");
-                        case "Y" -> botonActual.setStyle("-fx-background-color: rgba(255, 255, 0, 0.5); -fx-text-fill: black;");
-                        case "R" -> botonActual.setStyle("-fx-background-color: rgba(255, 0, 0, 0.5); -fx-text-fill: black;");
-                        case "comodin" -> botonActual.setStyle("-fx-background-color: rgba(0, 200, 200, 0.5); -fx-text-fill: black");
-                    }
                 }
                 else {
+                    String casillaPotenciada = powerUps[i][j];
+                    // se cambia la apariencia del boton para que refleje la ficha que representa
+                    switch (casillaPotenciada) {
+                        case "2L" -> botonActual.setStyle("-fx-background-color: rgba(255, 155, 0); -fx-text-fill: black;");
+                        case "2W" -> botonActual.setStyle("-fx-background-color: rgba(0, 255, 255, 0.7); -fx-text-fill: black;");
+                        case "3L" -> botonActual.setStyle("-fx-background-color: rgba(0, 0, 255); -fx-text-fill: black;");
+                        case "3W" -> botonActual.setStyle("-fx-background-color: rgba(255, 0, 0); -fx-text-fill: black;");
+                        case "" -> botonActual.setStyle("-fx-background-color: rgba(0, 204, 102, 0.8); -fx-text-fill: black");
+                    }
+
                     botonActual.setText("");
-                    botonActual.setStyle("");
                     int[] infoAlmacenada = (int[]) botonActual.getUserData();
                     infoAlmacenada[2] = 0;
                     botonActual.setUserData(infoAlmacenada);
@@ -648,14 +653,22 @@ public class RummikubGameBoard {
     /**
      * Método para el manejo de clicks sobre el botón "Tomar Ficha". Es invocado automáticamente.
      */
-    /*
     @FXML
     private void manejarBotonTomarFicha() {
         fichaActual = null;
         botonPrevio = null;
         if (partida.getTemporalMesa().matrizValida()) {
             Ficha tomada = partida.getTablero().agarrarpila();
+            partida.getTemporalMesa().restaurarFichas(jugadorActual);
+            partida.getTemporalMesa().copiarMesa(partida.getTablero()); // copia al temporal el válido porque se salta lo que se haya modificado al tomar ficha
 
+            jugadorActual.getFichasEnMano().ingresarficha(tomada);
+            int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
+            primerJugadorIndex = indiceSigJugador;
+            jugadorActual = partida.getJugadores().get(primerJugadorIndex);
+            cargarTableroValido();
+            setSoporteInicial(jugadorActual);
+            /*
             if (pilaActual > 0) { // si no es nulo es porque aun quedan fichas en la pila
                 pilaActual--;
                 drawTileButton.setText("Tomar ficha (" + pilaActual + ")");
@@ -701,15 +714,33 @@ public class RummikubGameBoard {
                     currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
                 }
             }
+
+             */
         }
         else {
             showErrorMessage("La disposición del tablero no era válida. Por favor reorganice sus fichas.");
             partida.getTemporalMesa().restaurarFichas(jugadorActual);
             partida.getTemporalMesa().copiarMesa(partida.getTablero());
+
+            //TODO cambios respecto al rummikub: aquí sí se tiene que pasar al siguiente jugador
+            int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
+            primerJugadorIndex = indiceSigJugador;
+            jugadorActual = partida.getJugadores().get(primerJugadorIndex);
             setSoporteInicial(jugadorActual);
             cargarTableroTemporal();
 
         }
+    }
+
+    @FXML
+    private void manejarBotonRestaurar() {
+        System.out.println("click al botón para restaurar la jugada actual al inicio del turno.");
+        partida.getTemporalMesa().restaurarFichas(jugadorActual);
+        partida.getTemporalMesa().copiarMesa(partida.getTablero());
+
+        setSoporteInicial(jugadorActual);
+        cargarTableroTemporal();
+
     }
 
     /**
@@ -734,7 +765,7 @@ public class RummikubGameBoard {
 
             // obtener la referencia a la clase de control para volver a la pantalla de juego
             RummikubGanador control = loader.getController();
-            control.recibirJugadores(this.jugadores);
+            // control.recibirJugadores(this.jugadores);
             // cierra la ventana de juego y abre la de puntajes
             currentStage.close();
             gameBoardStage.show();

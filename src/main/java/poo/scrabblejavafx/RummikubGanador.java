@@ -85,12 +85,14 @@ public class RummikubGanador {
     /**
      * Método invocado por el tablero de juego cuando la partida se termina, con el objetivo de pasar las referencias a
      * los jugadores que se crearon inicialmente.
+     * TODO modificar esta clase de control para que solo imprima los jugadores que ganaron y se cierre la pantalla.
      * @param jugadores el vector que contiene las referencias a los jugadores instanciados.
      */
+    /*
     public void recibirJugadores(Vector<Jugador> jugadores) {
         this.jugadores = jugadores;
 
-        int rondasJugadas = jugadores.get(0).getPuntos().size();
+        //int rondasJugadas = jugadores.get(0).getPuntos().size();
 
         player1Column.setText(jugadores.get(0).getNombre());
         player2Column.setText(jugadores.get(1).getNombre());
@@ -115,10 +117,13 @@ public class RummikubGanador {
         winnerLabel.setText("¡El ganador es: " + nombreDelGanador + " con " + puntajeMayor + " puntos!");
     }
 
+     */
+
     /**
      * Método para crear las filas en la tabla
      * @param rondasJugadas
      */
+    /*
     private void generarFilas(int rondasJugadas) {
         String numRonda;
         String puntaje1;
@@ -142,6 +147,8 @@ public class RummikubGanador {
         }
         tableView.setItems(data);
     }
+
+     */
 
     /**
      * Método para cerrar la pantalla de puntajes y volver a abrir la pantalla de juego

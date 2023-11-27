@@ -11,9 +11,10 @@
          <children>
             <Label fx:id="currentPlayerLabel" alignment="TOP_LEFT" prefHeight="17.0" prefWidth="151.0" text="Jugador Actual: playerName" textAlignment="CENTER" wrapText="true" />
             <Label fx:id="turnLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="151.0" text="Turno Actual: turnCounter" textAlignment="CENTER" wrapText="true" />
-            <Button fx:id="validateTurnButton" contentDisplay="CENTER" mnemonicParsing="false" text="Validar turno" style="-fx-content-display: center;"/>
-            <Button fx:id="drawTileButton" mnemonicParsing="false" text="Tomar ficha" wrapText="true" style="-fx-content-display: center;"/>
-            <Button fx:id="endTurnButton" layoutX="1020.0" layoutY="15.0" mnemonicParsing="false" onAction="#manejarBotonValidarTurno" text="Pasar Turno" wrapText="true" style="-fx-content-display: center;"/>
+            <Button fx:id="validateTurnButton" contentDisplay="CENTER" mnemonicParsing="false" style="-fx-content-display: center;" text="Validar turno" />
+            <Button fx:id="drawTileButton" mnemonicParsing="false" onAction="#manejarBotonTomarFicha" style="-fx-content-display: center;" text="Tomar ficha" wrapText="true" />
+            <Button fx:id="endTurnButton" layoutX="1020.0" layoutY="15.0" mnemonicParsing="false" onAction="#manejarBotonValidarTurno" style="-fx-content-display: center;" text="Pasar Turno" wrapText="true" />
+            <Button fx:id="RestoreTurn" layoutX="916.0" layoutY="15.0" mnemonicParsing="false" onAction="#manejarBotonRestaurar" style="-fx-content-display: center;" text="Restaurar Jugada" wrapText="true" />
          </children>
          <padding>
             <Insets left="5.0" right="5.0" top="5.0" />
