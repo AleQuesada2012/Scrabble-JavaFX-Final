@@ -11,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -108,6 +109,7 @@ public class RummikubGameBoard {
                 // se almacena información importante dentro del botón, como su fila, columna, y si este tiene o no una ficha.
                 botonesTablero[row][col].setUserData(new int[]{row, col, contieneFicha});
                 botonesTablero[row][col].setText("");
+                botonesTablero[row][col].setFont(new Font(16));
                 botonesTablero[row][col].setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
                 // Define el método encargado de manejar el evento de haber dado click en el
                 // TODO botonesTablero[row][col].setOnAction(e -> manejarClickFichaMatriz(e));
@@ -135,6 +137,7 @@ public class RummikubGameBoard {
                 button.setUserData(new int[] {i, j, posSoporte, hayFichaDentro}); // almacena la fila y columna igual que en el tablero
                 button.setText("");
                 button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+                //button.setFont(new Font(14));
                 // TODO button.setOnAction(e -> manejarClickFichaSoporte(e));
                 soporteGridPane.add(button, j, i);
                 posSoporte ++;
@@ -301,7 +304,7 @@ public class RummikubGameBoard {
         botonPrevio = null;
         currentPlayerLabel.setText("Jugando: " + primerJugador.getNombre());
         setTableroInicial();
-        // TODO setSoporteInicial(primerJugador);
+        setSoporteInicial(primerJugador);
         // TODO cargarTableroTemporal();
         turnLabel.setText("Turno: " + turnoActual);
         drawTileButton.setText("Tomar ficha (" + pilaActual + ")");
@@ -342,7 +345,8 @@ public class RummikubGameBoard {
         //coordenadasFicha = new int[]{-1, -1};
         botonPrevio = null;
         currentPlayerLabel.setText("Jugando: " + primerJugador.getNombre());
-        // TODO setSoporteInicial(primerJugador);
+        setSoporteInicial(primerJugador);
+        System.out.println("llega a setSoporte con el jugador: " + jugadorActual);
         // TODO cargarTableroTemporal();
         turnLabel.setText("Turno: " + turnoActual);
         drawTileButton.setText("Tomar ficha (" + pilaActual + ")");
@@ -408,8 +412,9 @@ public class RummikubGameBoard {
                     case "" -> botonTablero.setStyle("-fx-background-color: rgba(0, 204, 102, 0.8); -fx-text-fill: black");
                 }
             }
-
         }
+        botonTablero = getButtonByRowColumnIndex(7, 7, gameGrid);
+        botonTablero.setText("⭐");
     }
 
 
@@ -420,7 +425,6 @@ public class RummikubGameBoard {
      */
 
     private void setSoporteInicial(Jugador jugadorActual) {
-
         indiceSoporte = 0;
         System.out.println("Sus fichas: ");
         jugadorActual.printFichas();
@@ -429,22 +433,24 @@ public class RummikubGameBoard {
             Button button = (Button) boton; // convierte el objeto de tipo nodo a un objeto de tipo boton
             if (indiceSoporte < sizeSoporte){// deja de recorrer el arreglo de fichas cuando llegue a la ultima
             Ficha fichaActual = jugadorActual.getFichasEnMano().getficha(indiceSoporte);
-                // como el comodín tiene un 0, se hace una validación adicional para cambiar el texto a C
+                // como el comodín tiene un *, se hace una validación adicional para cambiar el texto
                 if(fichaActual.getLetra() == '*') {
-                    button.setText("C");
+                    button.setText("");
                 }
                 else {
-                    button.setText(Integer.toString(fichaActual.getLetra()));
+                    button.setText(String.valueOf(fichaActual.getLetra()));
                 }
+                button.setStyle("");
+
                 int[] infoAlmacenada = (int[]) button.getUserData();
-                infoAlmacenada[3] = 1;
+                infoAlmacenada[3] = 1; // se usa como un booleano para saber si el botón tiene ficha o no
                 button.setUserData(infoAlmacenada);
 
                 // Aquí había un switch para saber el color pero ahora las fichas no tienen color.
             }
             else {
                 button.setText("");
-                button.setStyle("");
+                button.setStyle("-fx-background-color: rgba(200, 200, 200, 0.5); -fx-text-fill: black;");
                 int[] infoAlmacenada = (int[]) button.getUserData();
                 infoAlmacenada[3] = 0;
                 button.setUserData(infoAlmacenada);
@@ -573,9 +579,19 @@ public class RummikubGameBoard {
     /**
      * Método para el manejo de clicks sobre el botón "Validar Turno". Es invocado automáticamente.
      */
-    /*
+
+    //TODO renombrar el método para que sea pasar turno, el de validar cumple más funciones
     @FXML
     private void manejarBotonValidarTurno() {
+        int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
+        primerJugadorIndex = indiceSigJugador;
+        jugadorActual = partida.getJugadores().get(primerJugadorIndex);
+        turnoActual++;
+        turnLabel.setText("Turno: " + turnoActual);
+        currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
+
+        setSoporteInicial(jugadorActual);
+        /*
         fichaActual = null;
         botonPrevio = null;
 
@@ -622,6 +638,8 @@ public class RummikubGameBoard {
                 cargarTableroTemporal();
             }
         }
+
+         */
     }
 
     /**

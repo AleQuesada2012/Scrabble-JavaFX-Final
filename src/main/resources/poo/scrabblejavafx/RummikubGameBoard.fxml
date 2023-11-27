@@ -5,14 +5,15 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="poo.scrabblejavafx.RummikubGameBoard">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="poo.scrabblejavafx.RummikubGameBoard">
    <children>
-      <HBox prefHeight="32.0" prefWidth="1280.0" spacing="200.0">
+      <HBox prefHeight="32.0" prefWidth="1280.0" spacing="100.0">
          <children>
             <Label fx:id="currentPlayerLabel" alignment="TOP_LEFT" prefHeight="17.0" prefWidth="151.0" text="Jugador Actual: playerName" textAlignment="CENTER" wrapText="true" />
             <Label fx:id="turnLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="151.0" text="Turno Actual: turnCounter" textAlignment="CENTER" wrapText="true" />
-            <Button fx:id="validateTurnButton" mnemonicParsing="false" text="Validar turno" />
-            <Button fx:id="drawTileButton" mnemonicParsing="false"  text="Tomar ficha" wrapText="true" />
+            <Button fx:id="validateTurnButton" contentDisplay="CENTER" mnemonicParsing="false" text="Validar turno" style="-fx-content-display: center;"/>
+            <Button fx:id="drawTileButton" mnemonicParsing="false" text="Tomar ficha" wrapText="true" style="-fx-content-display: center;"/>
+            <Button fx:id="endTurnButton" layoutX="1020.0" layoutY="15.0" mnemonicParsing="false" onAction="#manejarBotonValidarTurno" text="Pasar Turno" wrapText="true" style="-fx-content-display: center;"/>
          </children>
          <padding>
             <Insets left="5.0" right="5.0" top="5.0" />
@@ -23,7 +24,7 @@
          <children>
             <GridPane fx:id="gameGrid" alignment="TOP_CENTER" maxWidth="-Infinity" prefHeight="517.0" prefWidth="546.0">
                 <padding>
-                    <Insets top="10" right="10" bottom="10" left="10" />
+                    <Insets bottom="10" left="10" right="10" top="10" />
                 </padding>
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
