@@ -11,14 +11,17 @@ public class Juego {
 
     private Mesa temporalMesa;
 
+    private Diccionario diccionario;
+
     private Vector<Jugador> jugadores;
 
     /**
      * Constructor de la clase Juego la cual crea un nuevo tablero, una mesa temporal y los jugadores.
      */
     public Juego() {
-        tablero = new Mesa();
-        temporalMesa = new Mesa(1);
+        this.diccionario = new Diccionario();
+        tablero = new Mesa(diccionario);
+        temporalMesa = new Mesa(1,diccionario);
         jugadores = new Vector<>();
     }
 
@@ -73,6 +76,8 @@ public class Juego {
 
         return indicePrimerJugador;
     }
+
+
 
 
     /**
@@ -202,5 +207,7 @@ public class Juego {
     public Vector<Jugador> getJugadores() {
         return this.jugadores;
     }
+
+
 
 }

@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class Main {
-    /*
+
     public static void main(String[] args) {
 
         Juego juego = new Juego();
@@ -41,20 +41,19 @@ public class Main {
             if (input.equalsIgnoreCase("yes")) {
 
                 System.out.println("Current table ");
-                juego.getTemporalMesa().imprimirMesa();
+                juego.getTablero().imprimirmatriz();
 
 
                 System.out.println("Your Tiles:");
                 for (int i = 0; i < currentPlayer.getFichasEnMano().getCantfichas(); i++) {
                     Ficha ficha = currentPlayer.getFichasEnMano().getficha(i);
-                    System.out.println(i + ": " + ficha.getNum() + " " + ficha.getColor());
+                    System.out.println(i + ": " + ficha.getLetra() + " valor de la ficha: " + ficha.getPuntaje());
                 }
                 // Display the user's tiles
 
                 // Ask the user for the type of move
                 System.out.println("Choose your move:");
                 System.out.println("1. Play a tile on the table");
-                System.out.println("2. Move a tile on the table");
                 System.out.println("3. Finish your turn");
                 System.out.println("4. Take a tile from the bunch");
                 String moveTypeInput = scanner.nextLine();
@@ -64,7 +63,7 @@ public class Main {
                     // Display the current game table
                     // Ask the user for the index of the tile they want to play
                     System.out.println("Current table ");
-                    juego.getTemporalmesa().imprimirMesa();
+                    juego.getTemporalMesa().imprimirmatriz();
                     System.out.println("Enter the index of the tile you want to play:");
                     int tileIndex;
                     try {
@@ -96,80 +95,22 @@ public class Main {
                     Ficha selectedTile = primerJugador.getFichasEnMano().getficha(tileIndex);
 
                     // Use the selected tile and matrix indices to update the table (matrix)
-                    juego.getTemporalmesa().ingresarFicha(selectedTile, rowIndex, colIndex,primerJugador);
+                    juego.getTemporalMesa().ingresarFicha(selectedTile, rowIndex, colIndex, primerJugador);
 
                     // Display the updated game table
                     System.out.println("Updated Game Table:");
-                    juego.getTemporalmesa().imprimirMesa();
-
-                } else if (moveTypeInput.equals("2")) {
-                    if (currentPlayer.isPuedoempezar()) {
-                        // Code for moving a tile on the table
-                        System.out.println("Enter the row (x) and column (y) indices of the tile you want to move (e.g., 0 1):");
-                        String fromIndicesInput = scanner.nextLine();
-                        String[] fromIndicesStr = fromIndicesInput.split(" ");
-
-                        if (fromIndicesStr.length != 2) {
-                            System.out.println("Invalid input. Please enter valid row and column indices.");
-                            continue;
-                        }
-
-                        int fromRowIndex, fromColIndex;
-
-                        try {
-                            fromRowIndex = Integer.parseInt(fromIndicesStr[0]);
-                            fromColIndex = Integer.parseInt(fromIndicesStr[1]);
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid input. Please enter valid row and column indices.");
-                            continue;
-                        }
-
-                        // Ask for the target position
-                        System.out.println("Enter the row (x) and column (y) indices to place the tile (e.g., 0 1):");
-                        String toIndicesInput = scanner.nextLine();
-                        String[] toIndicesStr = toIndicesInput.split(" ");
-
-                        if (toIndicesStr.length != 2) {
-                            System.out.println("Invalid input. Please enter valid row and column indices.");
-                            continue;
-                        }
-
-                        int toRowIndex, toColIndex;
-
-                        try {
-                            toRowIndex = Integer.parseInt(toIndicesStr[0]);
-                            toColIndex = Integer.parseInt(toIndicesStr[1]);
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid input. Please enter valid row and column indices.");
-                            continue;
-                        }
-
-                        // Perform the tile movement
-                        juego.getTemporalmesa().reacomodarFicha(fromRowIndex, fromColIndex, toRowIndex, toColIndex);
-
-                        // Display the updated game table
-                        System.out.println("Updated Game Table:");
-                        juego.getTemporalmesa().imprimirMesa();
-                    } else {
-                        System.out.println("You need to make a play of more than 30 points before you can move tiles.");
-
-
-                    }
+                    juego.getTemporalMesa().imprimirmatriz();
 
                 }
-
-
                 else if (moveTypeInput.equals("3")) {
-                    if (juego.getTemporalmesa().valorDeJugada() && juego.getTemporalmesa().matrizValida()) {
-                        currentPlayer.setPuedoempezar(true);
-                    }
-                    if (currentPlayer.isPuedoempezar()) {
-                        if (juego.getTemporalmesa().matrizValida()) {
+                        if (juego.getTemporalMesa().matrizValida()) {
                             System.out.println("Turn finished.");
 
                             // The table is valid, end the player's turn and proceed to the next player
-                            juego.getTablero().copiarMesa(juego.getTemporalmesa());
-                            juego.getTablero().sonpartede();
+                            juego.getTablero().copiarMesa(juego.getTemporalMesa());
+
+                            juego.getTablero().sonParteDe();
+
                             int currentPlayerIndex = (primerJugadorIndex + 1) % juego.getJugadores().size();
                             primerJugadorIndex = currentPlayerIndex;
                             primerJugador = juego.getJugadores().get(currentPlayerIndex);
@@ -181,37 +122,34 @@ public class Main {
                             // The table is not valid, print temporalmesa and give the same three options
                             System.out.println("Temporary Table is not valid. Please rearrange your tiles.");
 
-                            juego.getTemporalmesa().restaurarFichas(currentPlayer);
+                            juego.getTemporalMesa().restaurarFichas(currentPlayer);
 
-                            juego.getTemporalmesa().copiarMesa(juego.getTablero());
+                            juego.getTemporalMesa().copiarMesa(juego.getTablero());
 
 
                             System.out.println("Temporary Table:");
-                            juego.getTemporalmesa().imprimirMesa();
+                            juego.getTemporalMesa().imprimirmatriz();
 
                             // Display the user's tiles
                             System.out.println("Your Tiles:");
                             for (int i = 0; i < currentPlayer.getFichasEnMano().getCantfichas(); i++) {
                                 Ficha ficha = currentPlayer.getFichasEnMano().getficha(i);
-                                System.out.println(i + ": " + ficha.getNum() + " " + ficha.getColor());
+                                System.out.println(i + ": " + ficha.getLetra() + " valor de la letra: " + ficha.getPuntaje());
                             }
 
                             // Ask the user for the type of move
                             System.out.println("Choose your move:");
                             System.out.println("1. Play a tile on the table");
-                            System.out.println("2. Move a tile on the table");
                             System.out.println("3. Finish your turn");
                             System.out.println("4. grab a tile from the bunch");
                             moveTypeInput = scanner.nextLine();
                         }
 
                     }
-                    else{
-                        System.out.println("Jugada no es mayor a 30 puntos recoga ficha ");
-                    }
-                }
+
+
                 else if (moveTypeInput.equals("4")) {
-                    if(juego.getTemporalmesa().matrizValida()){
+                    if(juego.getTemporalMesa().matrizValida()){
                         // Code for grabbing a tile from the bunch and ending the turn
                         Ficha grabbedTile = juego.getTablero().agarrarpila();// Assuming agarrarpila() returns a tile from the bunch
                         if (grabbedTile != null) {
@@ -231,17 +169,17 @@ public class Main {
                         // The bunch is empty or the player cannot grab more tiles
                         System.out.println("Temporary Table is not valid. Please rearrange your tiles.");
 
-                        juego.getTemporalmesa().restaurarFichas(currentPlayer);
-                        juego.getTemporalmesa().copiarMesa(juego.getTablero());
+                        juego.getTemporalMesa().restaurarFichas(currentPlayer);
+                        juego.getTemporalMesa().copiarMesa(juego.getTablero());
 
                         System.out.println("Temporary Table:");
-                        juego.getTemporalmesa().imprimirMesa();
+                        juego.getTemporalMesa().imprimirmatriz();
 
                         // Display the user's tiles
                         System.out.println("Your Tiles:");
                         for (int i = 0; i < currentPlayer.getFichasEnMano().getCantfichas(); i++) {
                             Ficha ficha = currentPlayer.getFichasEnMano().getficha(i);
-                            System.out.println(i + ": " + ficha.getNum() + " " + ficha.getColor());
+                            System.out.println(i + ": " + ficha.getLetra() + " valor de la letra: " + ficha.getPuntaje());
                         }
 
 
@@ -255,5 +193,5 @@ public class Main {
 
     }
 
-     */
+
 }

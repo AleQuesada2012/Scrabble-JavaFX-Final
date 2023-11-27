@@ -418,7 +418,7 @@ public class RummikubGameBoard {
      * Recorre la matriz de botones y les cambia la apariencia (color y texto) para que representen correctamente la
      * matriz existente en la lógica del juego.
      */
-    /*
+
     private void setSoporteInicial(Jugador jugadorActual) {
 
         indiceSoporte = 0;
@@ -430,25 +430,17 @@ public class RummikubGameBoard {
             if (indiceSoporte < sizeSoporte){// deja de recorrer el arreglo de fichas cuando llegue a la ultima
             Ficha fichaActual = jugadorActual.getFichasEnMano().getficha(indiceSoporte);
                 // como el comodín tiene un 0, se hace una validación adicional para cambiar el texto a C
-                if(fichaActual.getNum() == 0) {
+                if(fichaActual.getLetra() == '*') {
                     button.setText("C");
                 }
                 else {
-                    button.setText(Integer.toString(fichaActual.getNum()));
+                    button.setText(Integer.toString(fichaActual.getLetra()));
                 }
                 int[] infoAlmacenada = (int[]) button.getUserData();
                 infoAlmacenada[3] = 1;
                 button.setUserData(infoAlmacenada);
 
-
-                // logica para cambiar el color del boton segun el valor de la ficha
-                switch (fichaActual.getColor()) {
-                    case "N" -> button.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5); -fx-text-fill: black;");
-                    case "A" -> button.setStyle("-fx-background-color: rgba(0, 0, 255, 0.5); -fx-text-fill: black;");
-                    case "Y" -> button.setStyle("-fx-background-color: rgba(255, 255, 0, 0.5); -fx-text-fill: black;");
-                    case "R" -> button.setStyle("-fx-background-color: rgba(255, 0, 0, 0.5); -fx-text-fill: black;");
-                    case "comodin" -> button.setStyle("-fx-background-color: rgba(0, 200, 200, 0.5); -fx-text-fill: black");
-                }
+                // Aquí había un switch para saber el color pero ahora las fichas no tienen color.
             }
             else {
                 button.setText("");
@@ -460,7 +452,6 @@ public class RummikubGameBoard {
             indiceSoporte++;
         }
     }
-     */
 
     /**
      * Método para cambiar el estado de la matriz del tablero al cargar el último estado del tablero temporal.

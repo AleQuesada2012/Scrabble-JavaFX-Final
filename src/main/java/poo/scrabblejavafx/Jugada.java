@@ -48,8 +48,10 @@ public class Jugada {
                 }
             }
             return false;
-        } else {
+        } else if (word.length() >= 2 && word.length() <= 15) {
             return diccionario.esvalida(word);
+        } else {
+            return false;
         }
     }
 

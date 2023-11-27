@@ -26,11 +26,11 @@ public class Mesa {
      * Constructor de la clase mesa el cual genera una pila de fichas y establece
      * la matriz que será el tablero.
      */
-    public Mesa() {
+    public Mesa(Diccionario diccionario) {
         this.fichas = new Pila();
         tablero = new Ficha[15][15];
         llenarMatriz();
-        this.diccionario = new Diccionario();
+        this.diccionario = diccionario;
     }
 
     /**
@@ -39,7 +39,8 @@ public class Mesa {
      *
      * @param x utilizado para realizar una sobrecarga de constructores.
      */
-    public Mesa(int x) {
+    public Mesa(int x,Diccionario diccionario) {
+        this.diccionario = diccionario;
         tablero = new Ficha[15][15];
     }
 
@@ -378,45 +379,6 @@ public class Mesa {
         return res; //TODO cambiar retorno (solo tiene esto para que no dé error)
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Método para conocer si la matriz pertenece a la mesa está vacía.
      *
@@ -478,21 +440,6 @@ public class Mesa {
 
 
     /**
-     * Método el cual establece las fichas de la mesa como parte de las mismas.
-     */
-    public void sonParteDe() {
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 15; j++) {
-                if (this.tablero[i][j] != null) {
-                    this.tablero[i][j].setEsta(true);
-                }
-
-            }
-        }
-    }
-
-
-    /**
      * Método que restablece las fichas puestas en la mesa por el jugador a su soporte.
      *
      * @param jugador jugador el cual se le restablecerán sus fichas.
@@ -500,7 +447,7 @@ public class Mesa {
     public void restaurarFichas(Jugador jugador) {
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < 15; j++) {
-                if (this.matrizFichas[i][j] != null) {
+                if (this.tablero[i][j] != null) {
                     if (!this.tablero[i][j].isEsta()) {
                         jugador.getFichasEnMano().ingresarficha(this.tablero[i][j]);
                     }
@@ -559,4 +506,37 @@ public class Mesa {
     public Ficha[][] getTablero() {
         return tablero;
     }
+
+
+
+
+    /**
+     * Método para poder ingresar una ficha del soporte del jugador en la matriz de la mesa.
+     * @param ficha ficha que se desea colocar en la matriz.
+     * @param x fila de la matriz donde se desea colocar.
+     * @param y columna de la matriz donde se desea colocar.
+     * @param jugador jugador el cual quiere realizar la jugada.
+     */
+    public void ingresarFicha(Ficha ficha, int x, int y, Jugador jugador) {
+        if (this.getTablero()[x][y] == null) {
+            this.getTablero()[x][y] = ficha;
+            jugador.getFichasEnMano().usarficha(ficha);
+        }
+    }
+
+
+    /**
+     * Método el cual establece las fichas de la mesa como parte de las mismas.
+     */
+    public void sonParteDe() {
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 15; j++) {
+                if(this.tablero[i][j]!=null){
+                    this.tablero[i][j].setEsta(true);
+                }
+
+            }
+        }
+    }
+
 }
