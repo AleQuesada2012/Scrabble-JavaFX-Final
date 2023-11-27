@@ -75,6 +75,11 @@ public class Soporte {
         cantFichas++;
     }
 
+    public void eliminarFicha(int pos ){
+        fichas.remove(pos);
+        cantFichas--;
+    }
+
     /**
      * se utiliza para denotar que una ficha dentro de la mano del jugador fue utilizada en una jugada válida. Se encarga
      * de modificar tanto el vector de fichas como la cantidad de fichas respectivas.

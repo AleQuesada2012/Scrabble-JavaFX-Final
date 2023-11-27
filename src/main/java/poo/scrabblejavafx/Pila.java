@@ -105,6 +105,10 @@ public class Pila{
         return aAsignar;
     }
 
+    public void ingresarFicha(Ficha ficha){
+        fichasBarajadas.add(ficha);
+    }
+
     /**
      * Método para obtener el tamaño de la pila.
      * @return la cantidad de fichas en la pila.

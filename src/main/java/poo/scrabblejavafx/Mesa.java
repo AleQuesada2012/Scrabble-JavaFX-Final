@@ -1,10 +1,12 @@
 package poo.scrabblejavafx;
 
 import java.util.Objects;
+import java.util.Stack;
 import java.util.Vector;
 
 
 import java.util.ArrayList;
+import java.util.concurrent.RecursiveTask;
 
 
 /**
@@ -44,7 +46,9 @@ public class Mesa {
         tablero = new Ficha[15][15];
     }
 
-
+    /**
+     * Metodo el cual llena la matriz guia con los potenciadores del tablero.
+     */
     public void llenarMatriz() {
         this.matrizFichas = new String[][]{
                 {"3W", "", "", "2L", "", "", "", "3W", "", "", "", "2L", "", "", "3W"},
@@ -77,10 +81,13 @@ public class Mesa {
             return true;
         }
 
-        return validaHorizontal() && validaVertical();
+        return validaHorizontal() && validaVertical()&& todasFichasConectadas();
     }
 
-
+    /**
+     * Metodo el cual revisa si todas las jugadas horizontales son validas
+     * @return True si todas las jugadas son validas False si lo contrario
+     */
     private boolean validaHorizontal() {
         boolean esvalid = false;
         Vector<Ficha> fichas = new Vector<>();
@@ -90,25 +97,48 @@ public class Mesa {
 
                 if (tablero[i][j] != null) {
                     fichas.add(tablero[i][j]);
-                } else if (!fichas.isEmpty()) {
-                    Jugada posibleJugada = new Jugada(fichas, diccionario);
-                    if (posibleJugada.jugadavalida()) {
-                        esvalid = true;
-                    } else {
-                        return false;
+
+                } else {
+                    if(!fichas.isEmpty()) {
+                        if(fichas.size() == 1){
+                            esvalid = true;
+                        }
+                        else {
+                            Jugada posibleJugada = new Jugada(fichas, diccionario);
+
+                            if (posibleJugada.jugadavalida()) {
+
+                                esvalid = true;
+
+                            } else {
+
+                                return false;
+                            }
+                        }
+                        fichas.clear();
                     }
-                    fichas.clear();
                 }
             }
 
             if (!fichas.isEmpty()) {
-                Jugada posibleJugada = new Jugada(fichas, diccionario);
-                if (posibleJugada.jugadavalida()) {
+
+                if (fichas.size() == 1) {
                     esvalid = true;
-                } else {
-                    return false;
                 }
-                fichas.clear();
+                else {
+                    Jugada posibleJugada = new Jugada(fichas, diccionario);
+
+                    if (posibleJugada.jugadavalida()) {
+
+                        esvalid = true;
+
+                    } else {
+
+                        return false;
+                    }
+
+                    fichas.clear();
+                }
             }
         }
 
@@ -116,7 +146,10 @@ public class Mesa {
     }
 
 
-
+    /**
+     * Metodo el cual valida las jugadas en el tablero en vertical
+     * @return true si todas las jugadas horizontales son validas false si no
+     */
     private boolean validaVertical() {
         boolean esvalid = false;
         Vector<Ficha> fichas = new Vector<>();
@@ -128,15 +161,22 @@ public class Mesa {
                 }
                 else {
                     if(!fichas.isEmpty()) {
-                        Jugada posibleJugada = new Jugada(fichas, diccionario);
 
-                        if (posibleJugada.jugadavalida()) {
+                        if(fichas.size() == 1){
 
                             esvalid = true;
+                        }
+                        else {
+                            Jugada posibleJugada = new Jugada(fichas, diccionario);
 
-                        } else {
+                            if (posibleJugada.jugadavalida()) {
 
-                            return false;
+                                esvalid = true;
+
+                            } else {
+
+                                return false;
+                            }
                         }
                         fichas.clear();
                     }
@@ -144,17 +184,22 @@ public class Mesa {
             }
 
             if (!fichas.isEmpty()) {
-                Jugada posibleJugada = new Jugada(fichas, diccionario);
-
-                if (posibleJugada.jugadavalida()) {
+                if(fichas.size() == 1){
 
                     esvalid = true;
-
-                } else {
-
-                    return false;
                 }
+                else {
+                    Jugada posibleJugada = new Jugada(fichas, diccionario);
 
+                    if (posibleJugada.jugadavalida()) {
+
+                        esvalid = true;
+
+                    } else {
+
+                        return false;
+                    }
+                }
                 fichas.clear();
             }
         }
@@ -163,37 +208,120 @@ public class Mesa {
     }
 
 
-    private boolean validaConectividad() {
-        //TODO: Función de chat, validar que sirva antes de dejarla aquí
+
+    public
+    Boolean esvalido(int x, int y, Vector<Vector<Boolean>> visi) {
+        return x >= 0 && x < 15 && y >= 0 && y < 15 && !visi.get(x).get(y);
+    }
+
+
+
+    public  Pair<Ficha,Pair<Integer,Integer>> encontrarPrimeraFicha() {
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < 15; j++) {
-                if (tablero[i][j] != null) {
-                    // Check horizontally
-                    if (j > 0 && tablero[i][j - 1] != null) {
-                        continue;  // Connected to the left
-                    }
-                    if (j < 14 && tablero[i][j + 1] != null) {
-                        continue;  // Connected to the right
-                    }
+                if (this.tablero[i][j] != null) {
 
-                    // Check vertically
-                    if (i > 0 && tablero[i - 1][j] != null) {
-                        continue;  // Connected upwards
-                    }
-                    if (i < 14 && tablero[i + 1][j] != null) {
-                        continue;  // Connected downwards
-                    }
+                    Pair<Integer, Integer> coordenadas = new Pair<>(i, j);
+                    Pair<Ficha,Pair<Integer,Integer>> primera = new Pair<>(this.tablero[i][j],coordenadas);
+                    return primera;
+                }
+            }
+        }
+        return null;
+    }
 
-                    // Not connected to any neighboring tile
+    public Vector<Pair<Integer, Integer>> vecinos(int x, int y) {
+        Vector<Pair<Integer, Integer>> moves = new Vector<>();
+
+        moves.add(new Pair<>(x + 1, y));
+        moves.add(new Pair<>(x - 1, y));
+        moves.add(new Pair<>(x, y + 1));
+        moves.add(new Pair<>(x, y - 1));
+
+        return moves;
+    }
+
+
+    Vector<Pair<Integer,Integer>> obtenervecinos(int x, int j, Vector<Vector<Boolean>> visi) {
+        Vector<Pair<Integer,Integer>> vecinas = new Vector<>();
+        Vector<Pair<Integer,Integer>> posibles = vecinos(x,j);
+        for ( Pair<Integer,Integer> move: posibles) {
+            int i = move.getFirst(); j = move.getSecond();
+            if (esvalido(i, j,visi)) {
+                Pair<Integer,Integer> nueva = new Pair<>(i,j);
+                vecinas.add(nueva);
+            }
+        }
+        return vecinas;
+    }
+
+
+    public boolean todasFichasConectadas() {
+        Vector<Vector<Boolean>> visitadas = new Vector<>();
+
+
+        for (int i = 0; i < 15; i++) {
+            Vector<Boolean> row = new Vector<>();
+
+
+            for (int j = 0; j < 15; j++) {
+                row.add(false);
+            }
+
+            visitadas.add(row);
+        }
+
+
+        Pair<Ficha,Pair<Integer,Integer>> primeraFicha = encontrarPrimeraFicha();
+
+        if (primeraFicha == null) {
+            return true;
+        }
+
+        visitadas.get(primeraFicha.getSecond().getFirst()).set(primeraFicha.getSecond().getSecond(), true);
+
+
+        Stack<Pair<Ficha,Pair<Integer,Integer>>> stack = new Stack<>();
+        stack.push(primeraFicha);
+
+        while (!stack.isEmpty()) {
+            Pair<Ficha,Pair<Integer,Integer>> fichaActual = stack.pop();
+            int fila = fichaActual.getSecond().getFirst();
+            int columna = fichaActual.getSecond().getSecond();
+
+
+            for(Pair<Integer,Integer> move : obtenervecinos(fila,columna,visitadas)){
+                if(tablero[move.getFirst()][move.getSecond()] != null) {
+                    visitadas.get(move.getFirst()).set(move.getSecond(), true);
+                    Ficha ficha = tablero[move.getFirst()][move.getSecond()];
+                    Pair<Ficha,Pair<Integer,Integer>> nuevoMove = new Pair<>(ficha,move);
+                    stack.push(nuevoMove);
+                }
+                
+            }
+
+        }
+
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 15; j++) {
+                if (!visitadas.get(i).get(j) && this.tablero[i][j] != null) {
+
                     return false;
                 }
             }
         }
+
         return true;
     }
 
 
 
+
+
+    /**
+     * Metodo que obtiene todas las jugadas nuevas en horizontal en el tablero
+     * @return un vector el cual contiene todas las jugadas horizontales
+     */
     public Vector<Jugada> obtenerJugadas(){
         Vector<Pair<Integer, Integer>> duplas = new Vector<>();
         Vector<Jugada> jugadasNuevas =  new Vector<>();
@@ -234,6 +362,10 @@ public class Mesa {
 
     }
 
+    /**
+     * Metodo que obtiene todas las jugadas nuevas del tablero en vertical
+     * @return Retorna un vector conteniendo las jugadas verticales nuevas.
+     */
     public Vector<Jugada> obtenerJugadasVeticales(){
         Vector<Pair<Integer, Integer>> duplas = new Vector<>();
         Vector<Jugada> jugadasNuevas =  new Vector<>();
@@ -274,7 +406,10 @@ public class Mesa {
 
     }
 
-
+    /**
+     * Metodo que calcula los valores de cada jugada realizada por el jugador en la partida nueva
+     * @return
+     */
     public int calcularValor(){
         int res = 0;
         int cont = 0;
@@ -467,6 +602,7 @@ public class Mesa {
                 tablero[fila][col] = Mesaoriginal.tablero[fila][col];
             }
         }
+        this.matrizFichas = Mesaoriginal.getMatrizFichas();
         espaciolleno = Mesaoriginal.espaciolleno;
     }
 
@@ -538,5 +674,21 @@ public class Mesa {
             }
         }
     }
+
+
+
+    /**
+     * Metodo que verifica que la jugada principal se realizara en la posicion de la estrella.
+     * @return
+     */
+    public boolean esta77(){
+            if (tablero[7][7] != null) {
+                return true;
+            }
+            return false;
+
+    }
+
+
 
 }

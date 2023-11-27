@@ -7,9 +7,7 @@ import java.util.*;
  */
 public class Jugador {
     private String Nombre;
-    private int puntosTotales;
-
-    private Vector<Integer> listaPuntos;
+    private int puntos;
     private Soporte fichasEnMano;
     private boolean puedoempezar;
     private boolean ganador;
@@ -30,20 +28,14 @@ public class Jugador {
         Nombre = nombre;
     }
 
-    /**
-     * Método el cual obtiene los puntos de las partidas anteriores del jugador.
-     * @return los puntajes del jugador en las partidas anteriores.
-     */
-    public Vector<Integer> getPuntos() {
-        return this.listaPuntos;
-    }
+
 
     /**
      * Método el cual obtiene los puntos totales del jugador.
      * @return el total de los puntos del jugador.
      */
     public int getPuntosTotales(){
-        return this.puntosTotales;
+        return this.puntos;
     }
 
     /**
@@ -51,7 +43,7 @@ public class Jugador {
      * @param puntosTotales1 corresponde al puntaje acual del jugador.
      */
     public void setPuntosTotales(int puntosTotales1) {
-        puntosTotales = puntosTotales1;
+        puntos= puntosTotales1;
     }
 
     /**
@@ -60,16 +52,8 @@ public class Jugador {
      *
      * @param puntos corresponde al puntaje del jugador en la partida actual.
      */
-    public void setPuntos(int puntos){
-        this.listaPuntos.add(puntos);
-    }
 
-    /**
-     * Método el cual establece el vector de los puntos del jugador.
-     */
-    public void crearVectorPuntos() {
-        this.listaPuntos = new Vector<>();
-    }
+
 
     /**
      *Método el cual establece el soporte del jugador.
@@ -134,14 +118,6 @@ public class Jugador {
         return fichasEnMano.getficha(x);
     }
 
-    /**
-     * Método para extraer el puntaje de un jugador en una ronda determinada
-     * @param n el número de partida en la que se quiere obtener el puntaje
-     * @return el puntaje en formato de String para desplegarlo en la pantalla de puntajes
-     */
-    public String getPuntosEnRondaN(int n) {
-        return Integer.toString(listaPuntos.get(n));
-    }
 
     /**
      * Método para imprimir las fichas contenidas en el soporte del jugador
@@ -161,6 +137,9 @@ public class Jugador {
         fichasEnMano.ingresarficha(ficha);
     }
 
+
+
+
     /**
      * Método para restablecer los atributos del jugador a un valor equivalente a cuando se creó por primera vez
      * a excepción de sus puntos
@@ -176,7 +155,7 @@ public class Jugador {
     public String toString() {
         return "Jugador{" +
                 "Nombre='" + Nombre + '\'' +
-                ", puntos=" + puntosTotales +
+                ", puntos=" + puntos +
                 ", fichasEnMano=" + fichasEnMano +
                 ", puedoempezar=" + puedoempezar +
                 ", ganador=" + ganador +

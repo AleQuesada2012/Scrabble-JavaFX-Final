@@ -1,5 +1,7 @@
 package poo.scrabblejavafx;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Vector;
 
 /**
@@ -14,6 +16,9 @@ public class Juego {
     private Diccionario diccionario;
 
     private Vector<Jugador> jugadores;
+
+
+    boolean seRealizo;
 
     /**
      * Constructor de la clase Juego la cual crea un nuevo tablero, una mesa temporal y los jugadores.
@@ -96,7 +101,6 @@ public class Juego {
             else {
                 // valida si el caso de finalización es el primero: cuando todos "saltan" de turno
                 int puntos = jugador.getFichasEnMano().getsumadefichas();
-                jugador.setPuntos(puntos * -1); // le coloca en negativo los puntos al jugador
                 jugador.setPuntosTotales(jugador.getPuntosTotales()  + (puntos * -1));
                 cont += puntos;
 
@@ -104,7 +108,6 @@ public class Juego {
         }
 
         if(ganador!=null){
-            ganador.setPuntos(cont);
             ganador.setPuntosTotales(ganador.getPuntosTotales() + cont);
 
         }
@@ -168,6 +171,18 @@ public class Juego {
 
 
     /**
+     * Metodo que vuelve a llenar el atril del jugador posterior a realizar una jugada
+     * @param jugador jugador el cual su atril es incompleto
+     */
+    public void refillearFichas(Jugador jugador){
+        while (jugador.getFichasEnMano().getFichas().size()<7){
+                jugador.agregarFicha(tablero.getFichas().agarrarficha());
+        }
+
+    }
+
+
+    /**
      * Método de acceso a el atributo "temporalMesa".
      * @return la Mesa temporal que se lleva junto con la mesa original.
      */
@@ -189,7 +204,26 @@ public class Juego {
      */
     public void terminarTurno(){
         actualizarMesa();
+    }
 
+    /**
+     * Metodo el cual recibe la cantidad de fichas que el jugador desea cambiar y se le devolvera la misma cantidad
+     * @param jugador jugador del turno actual que desea cambiar fichas
+     * @param indices vector de ints que contiene los indices de las fichas a cambiar.
+     */
+
+    public void cambiarFichas(Jugador jugador,Vector<Integer> indices){
+        int tam = indices.size();
+
+        for(int indice : indices){
+            tablero.getFichas().ingresarFicha(jugador.getFichasEnMano().getficha(indice));
+            jugador.getFichasEnMano().eliminarFicha(indice);
+
+        }
+
+        Collections.shuffle(tablero.getFichas().getStack());
+
+        for(int i=0;i<tam;i++) jugador.agregarFicha(tablero.getFichas().agarrarficha());
     }
 
     /**
@@ -208,6 +242,7 @@ public class Juego {
         return this.jugadores;
     }
 
-
-
+    public Diccionario getDiccionario() {
+        return diccionario;
+    }
 }
