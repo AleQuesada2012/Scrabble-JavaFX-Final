@@ -71,6 +71,9 @@ public class RummikubGameBoard {
     private Button drawTileButton;
 
     @FXML
+    private Button endTurnButton;
+
+    @FXML
     private VBox mainVBox;
 
     @FXML
