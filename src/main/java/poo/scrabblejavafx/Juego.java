@@ -47,7 +47,7 @@ public class Juego {
     public int determinarOrden() {
         char targetLetter = 'a';
 
-        int masCercano = 1 << 31;
+        int masCercano = Integer.MAX_VALUE;
         int indicePrimerJugador = 0;
 
         for (int i = 0; i < this.jugadores.size(); i++) {
