@@ -140,10 +140,9 @@ public class Juego {
     public void agarrarfichas(){
         for(Jugador jugador :  jugadores) {
             for (int i = 0; i < 6; i++) {
-                jugador.agregarFicha((tablero.agarrarpila()));
+                jugador.agregarFicha(tablero.getFichas().agarrarficha()); // nueavmente, le da las fichas correctamente
             }
         }
-
     }
 
     /**

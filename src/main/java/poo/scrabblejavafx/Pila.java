@@ -26,6 +26,7 @@ public class Pila{
         colocarCaracteres(); // se llama para que dentro de este arreglo existan las 27 letras que se van a utilizar
         random = new Random();
         iniciarcantidades();
+        crearFichasBarajadas();
     }
 
     public void iniciarcantidades() {
@@ -85,7 +86,7 @@ public class Pila{
         this.fichasBarajadas = new Vector<>();
         for (int i = 0; i < 28; i++) {
             for (int j = 0; j < totalDeLetras.get(i); j++) {
-                Ficha nuevaFicha = new Ficha((char) letras.charAt(i));
+                Ficha nuevaFicha = new Ficha(letras.charAt(i));
                 fichasBarajadas.add(nuevaFicha);
             }
         }
@@ -99,8 +100,8 @@ public class Pila{
      * @return la ficha que se agarró.
      */
     public Ficha agarrarficha() {
-        Ficha aAsignar = fichasBarajadas.firstElement();
-        fichasBarajadas.removeFirst();
+        Ficha aAsignar = fichasBarajadas.get(0);
+        fichasBarajadas.removeElementAt(0);
         return aAsignar;
     }
 
