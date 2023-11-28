@@ -56,7 +56,9 @@ public class ScrabbleGameBoard {
 
     private int cantidadPreviaDeFichas;
 
-    private boolean cambiandoFichas = false;
+    private boolean cambiandoFichas = false; // se usa como variable de control en caso de que el usuario quiera cambiar fichas
+
+    private Vector<Ficha> fichasPorCambiar; // almacena el índice de las fichas por cambiar.
 
     @FXML
     private AnchorPane rootPane;
@@ -101,6 +103,7 @@ public class ScrabbleGameBoard {
         crearBotonesSoporte();
         this.jugadores = new Vector<>();
         this.jugadoresEnTurnoFinal = new Vector<>();
+        this.fichasPorCambiar = new Vector<>();
     }
 
     /**
@@ -170,11 +173,20 @@ public class ScrabbleGameBoard {
         int col = rowIndex[1];
         int tieneFicha = rowIndex[2];
         if(tieneFicha == 0) {
+
+            if (cambiandoFichas) {
+                cambiandoFichas = false;
+                fichaActual = null;
+                showErrorMessage("Al cambiar fichas no debe tocar el tablero, solo su soporte y luego pasar turno. Se anuló la operación de cambio de fichas.");
+                drawTileButton.setText("Cambiar Fichas (" + partida.getTablero().getFichas().getStackSize() + ")");
+                if(!fichasPorCambiar.isEmpty()) {
+                    fichasPorCambiar.clear();
+                }
+            }
+
             System.out.println("entró a que el botón no tiene ficha");
             if (fichaActual != null && vieneDelSoporte) {
                 System.out.println("entró a que la ficha no es nula y viene del soporte");
-                cambiandoFichas = false;
-                //TODO setear el texto del botón de cambio de fichas al default (cambiar ficha)
                 //quiere decir que vamos a sacar una ficha del soporte y ponerla en el boton que se hizo click
                 partida.getTemporalMesa().ingresarFicha(fichaActual, row, col, jugadorActual); // ya coloque la ficha
                 fichaActual = null;
@@ -190,7 +202,14 @@ public class ScrabbleGameBoard {
         }
         else {
             if (fichaActual == null) {
-                showErrorMessage("No puede manipular fichas del tablero. Si desea corregir un error debe presionar Restaurar Jugada.");
+                showErrorMessage("No puede manipular fichas del tablero. Si desea corregir un error debe presionar Restaurar Jugada. Si estaba seleccionando fichas para cambiar, se anuló esa operación.");
+                if (cambiandoFichas) {
+                    cambiandoFichas = false;
+                    drawTileButton.setText("Cambiar Fichas (" + partida.getTablero().getFichas().getStackSize() + ")");
+                    if(!fichasPorCambiar.isEmpty()) {
+                        fichasPorCambiar.clear();
+                    }
+                }
             }
         }
 
@@ -225,7 +244,12 @@ public class ScrabbleGameBoard {
                     this.cargarTableroTemporal();
                 }
                 else {
-                    // aquí es donde se entra cuando se quiere cambiar ficha
+                    System.out.println("entra a que se están cambiando las fichas cuando no había fichaActual asignada");
+                    Ficha fichaEnEstaPosicion = jugadorActual.getFichasEnMano().getficha(indiceOriginal);
+                    if(!fichasPorCambiar.contains(fichaEnEstaPosicion)) {
+                        fichasPorCambiar.add(fichaEnEstaPosicion);
+                        System.out.println("ficha seleccionada para cambiar: en posición " + indiceOriginal);
+                    }
                 }
             }
         }
@@ -237,9 +261,7 @@ public class ScrabbleGameBoard {
                     this.fichaActual = jugadorActual.escogerficha(indiceOriginal);
                     //System.out.println("ficha actual: " + fichaActual.getNum() + fichaActual.getColor());
                 }
-                else {
-                    //TODO: agregar la lógica de cambiar fichas
-                }
+                // No hay lógica para cambio de ficha en esta sección porque  nunca va a llegar aquí cuando hay fichaActual
             } else if (vieneDelSoporte && tieneFicha == 0) {
                 this.fichaActual = null;
             }
@@ -285,7 +307,7 @@ public class ScrabbleGameBoard {
         partida.agarrarfichas();
 
         boolean gameOver = false;
-        turnoActual = 1;
+        //turnoActual = 1;
         pilaActual = partida.getTablero().getFichas().getStackSize();
         fichaActual = null;
         //coordenadasFicha = new int[]{-1, -1};
@@ -295,8 +317,8 @@ public class ScrabbleGameBoard {
         this.copiaPotenciadasPrevias = partida.getTablero().getMatrizFichas();
         setSoporteInicial(primerJugador);
         // TODO cargarTableroTemporal(); se cambió por set tablero inicial ya que en la primera jugada no hay fichas.
-        turnLabel.setText("Turno: " + turnoActual);
-        drawTileButton.setText("Tomar ficha (" + pilaActual + ")");
+        turnLabel.setText("Sus puntos: " + jugadorActual.getPuntosTotales());
+        drawTileButton.setText("Cambiar Fichas (" + pilaActual + ")");
         for (Jugador jugador : partida.getJugadores()) {
             System.out.println(jugador);
             System.out.println("cantidad de fichas: " + jugador.getFichasEnMano().getCantfichas());
@@ -473,7 +495,7 @@ public class ScrabbleGameBoard {
     private void cargarTableroValido() {
         Mesa tableroValido = partida.getTablero(); // matriz de fichas
         String[][] powerUps = partida.getTablero().getMatrizFichas(); // matriz de casillas potenciadas
-        System.out.println("Tablero temporal: ");
+        System.out.println("Tablero valido: ");
         tableroValido.imprimirmatriz();
         int filaMesa = 0;
         int columnaMesa = 0;
@@ -538,6 +560,7 @@ public class ScrabbleGameBoard {
      * Método para el manejo de clicks sobre el botón "Validar Jugada". Es invocado automáticamente.
      */
     @FXML private void manejarBtnValidarJugada() {
+        anularCambioFichas();
         fichaActual = null;
         botonPrevio = null;
 
@@ -556,21 +579,22 @@ public class ScrabbleGameBoard {
 
                     // se revisa si el jugador tiene menos de 7 fichas, en ese caso, se rellena su soporte hasta que tenga esa cantidad
                     partida.refillearFichas(jugadorActual);
+                    //drawTileButton.setText("Cambiar Fichas (" + pilaActual + ")");
 
                     int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
                     primerJugadorIndex = indiceSigJugador;
                     jugadorActual = partida.getJugadores().get(primerJugadorIndex);
-                    cantidadPreviaDeFichas = partida.getTablero().getCantFichas();
+                    cantidadPreviaDeFichas = jugadorActual.getFichasEnMano().getCantfichas(); // se usa para validar que no salte de turno "validando el juego" sin agregar algo.
 
                     turnoActual++;
-                    turnLabel.setText("Turno: " + turnoActual);
+                    turnLabel.setText("Sus puntos: " + jugadorActual.getPuntosTotales());
                     currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
 
                     cargarTableroValido();
                     setSoporteInicial(jugadorActual);
 
                     if (!jugadoresEnTurnoFinal.isEmpty()) {
-                        jugadoresEnTurnoFinal.clear();
+                        jugadoresEnTurnoFinal.clear(); // si se habían saltado varios turnos pero un jugador logró una jugada, se reinicia el contador
                     }
 
                 }
@@ -579,24 +603,34 @@ public class ScrabbleGameBoard {
                 }
             }
             else {
-                partida.getTablero().copiarMesa(partida.getTemporalMesa()); //TODO: revisar que las potenciadas se cambien bien
-                partida.getTablero().sonParteDe();
+                if(cantidadPreviaDeFichas == jugadorActual.getFichasEnMano().getCantfichas()) {
+                    showErrorMessage("No puede validar sin agregar una jugada propia. Si desea pasar turno, presione el botón indicado.");
+                }
+                else {
+                    if(partida.getTablero().getFichas().getStackSize() == 0 && jugadorActual.getFichasEnMano().getCantfichas() == 0) {
+                        terminarPartida();
+                    }
 
-                // se revisa si el jugador tiene menos de 7 fichas, en ese caso, se rellena su soporte hasta que tenga esa cantidad
-                partida.refillearFichas(jugadorActual);
+                    jugadorActual.setPuntosTotales(partida.getTemporalMesa().calcularValor());
+                    partida.getTablero().copiarMesa(partida.getTemporalMesa()); //TODO: revisar que las potenciadas se cambien bien
+                    partida.getTablero().sonParteDe();
+                    // se revisa si el jugador tiene menos de 7 fichas, en ese caso, se rellena su soporte hasta que tenga esa cantidad
+                    partida.refillearFichas(jugadorActual);
 
-                cantidadPreviaDeFichas = partida.getTablero().getCantFichas();
+                    //cantidadPreviaDeFichas = jugadorActual.cantFichas(); // se usa para validar que no salte de turno "validando el juego" sin agregar algo.
 
-                int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
-                primerJugadorIndex = indiceSigJugador;
-                jugadorActual = partida.getJugadores().get(primerJugadorIndex);
+                    int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
+                    primerJugadorIndex = indiceSigJugador;
+                    jugadorActual = partida.getJugadores().get(primerJugadorIndex);
+                    cantidadPreviaDeFichas = jugadorActual.cantFichas(); // se usa para validar que no salte de turno "validando el juego" sin agregar algo.
 
-                turnoActual++;
-                turnLabel.setText("Turno: " + turnoActual);
-                currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
+                    turnoActual++;
+                    turnLabel.setText("Sus puntos: " + jugadorActual.getPuntosTotales());
+                    currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
 
-                cargarTableroValido();
-                setSoporteInicial(jugadorActual);
+                    cargarTableroValido();
+                    setSoporteInicial(jugadorActual);
+                }
             }
         }
         else {
@@ -608,13 +642,46 @@ public class ScrabbleGameBoard {
             int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
             primerJugadorIndex = indiceSigJugador;
             jugadorActual = partida.getJugadores().get(primerJugadorIndex);
+            cantidadPreviaDeFichas = jugadorActual.cantFichas(); // se usa para validar que no salte de turno "validando el juego" sin agregar algo.
+
             setSoporteInicial(jugadorActual);
             cargarTableroTemporal();
 
             turnoActual ++;
-            turnLabel.setText("Turno: " + turnoActual);
+            turnLabel.setText("Sus puntos: " + jugadorActual.getPuntosTotales());
             currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
 
+        }
+    }
+
+    /**
+     * Método para cambiar temporalmente la ejecución de la lógica de forma que las fichas seleccionadas las cambie al pasar el turno
+     */
+    @FXML
+    private void manejarBtnCambiarFichas() {
+        int tamañoPila = partida.getTablero().getFichas().getStackSize();
+        fichaActual = null;
+        if (cambiandoFichas) {
+            // si ya estaba cambiando fichas pero se presiona el botón nuevamente, se anula la operación
+            if (!fichasPorCambiar.isEmpty()) {
+                fichasPorCambiar.clear();
+            }
+            cambiandoFichas = false;
+            drawTileButton.setText("Cambiar Fichas (" + tamañoPila + ")");
+        }
+        else {
+            cambiandoFichas = true;
+            drawTileButton.setText("Cambiando Fichas (" + tamañoPila + ")");
+        }
+
+    }
+
+    private void anularCambioFichas() {
+        fichaActual = null;
+        cambiandoFichas = false;
+        drawTileButton.setText("Cambiar Fichas (" + partida.getTablero().getFichas().getStackSize() + ")");
+        if(!fichasPorCambiar.isEmpty()) {
+            fichasPorCambiar.clear();
         }
     }
 
@@ -626,21 +693,33 @@ public class ScrabbleGameBoard {
     private void manejarBtnPasarTurno() {
         fichaActual = null;
         partida.getTemporalMesa().restaurarFichas(jugadorActual);
-        //TODO: hacer que esto almacene los jugadores en un vector para que cuando las personas pasan turno se acabe el juego
         jugadoresEnTurnoFinal.add(jugadorActual);
         if (jugadoresEnTurnoFinal.size() >= jugadores.size()) {
             partida.sumarPuntos();
             terminarPartida();
         }
         else {
+            if(cambiandoFichas) {
+                System.out.println(fichasPorCambiar);
+                partida.cambiarFichas(jugadorActual, fichasPorCambiar);
+
+                //luego de haber cambiado ficha, se anula el proceso que la calculaba.
+                anularCambioFichas();
+            }
+            drawTileButton.setText("Cambiar Fichas (" + partida.getTablero().getFichas().getStackSize() + ")");
+            //se valida si la pila se agotó
+            if (partida.getTablero().getFichas().getStackSize() == 0) {
+                showErrorMessage("Al cambiar fichas, se agotó la pila. Si la cantidad que eligió cambiar era mayor que las disponibles, se le asignaron todas las restantes.");
+            }
             //jugadoresEnTurnoFinal.add(jugadorActual);
             //después de agregar los que han saltado de turno, se pasa al siguiente jugador
             int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
             primerJugadorIndex = indiceSigJugador;
             jugadorActual = partida.getJugadores().get(primerJugadorIndex);
+            cantidadPreviaDeFichas = jugadorActual.cantFichas(); // se usa para validar que no salte de turno "validando el juego" sin agregar algo.
 
             turnoActual++;
-            turnLabel.setText("Turno: " + turnoActual);
+            turnLabel.setText("Sus puntos: " + jugadorActual.getPuntosTotales());
             currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
             cargarTableroTemporal();
             setSoporteInicial(jugadorActual);
@@ -701,8 +780,10 @@ public class ScrabbleGameBoard {
      * Método para el manejo de clicks sobre el botón "Tomar Ficha". Es invocado automáticamente.
      */
     //TODO cambiar lógica porque no es de tomar ficha, es de cambiar fichas
+    /*
     @FXML
     private void manejarBotonTomarFicha() {
+        anularCambioFichas();
         fichaActual = null;
         botonPrevio = null;
         if (partida.getTemporalMesa().matrizValida()) {
@@ -715,9 +796,11 @@ public class ScrabbleGameBoard {
             int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
             primerJugadorIndex = indiceSigJugador;
             jugadorActual = partida.getJugadores().get(primerJugadorIndex);
+            cantidadPreviaDeFichas = jugadorActual.cantFichas(); // se usa para validar que no salte de turno "validando el juego" sin agregar algo.
+
             cargarTableroValido();
             setSoporteInicial(jugadorActual);
-            /*
+
             if (pilaActual > 0) { // si no es nulo es porque aun quedan fichas en la pila
                 pilaActual--;
                 drawTileButton.setText("Tomar ficha (" + pilaActual + ")");
@@ -764,15 +847,18 @@ public class ScrabbleGameBoard {
                 }
             }
 
-             */
+
         }
         else {
             System.out.println("botón de cambiar fichas presionado cuando la matriz no es válida");
         }
     }
 
+     */
+
     @FXML
     private void manejarBotonRestaurar() {
+        anularCambioFichas();
         fichaActual = null;
         System.out.println("click al botón para restaurar la jugada actual al inicio del turno.");
         partida.getTemporalMesa().restaurarFichas(jugadorActual);
@@ -804,7 +890,7 @@ public class ScrabbleGameBoard {
             gameBoardStage.setTitle("Scrabble - Puntajes");
 
             // obtener la referencia a la clase de control para volver a la pantalla de juego
-            RummikubGanador control = loader.getController();
+            ScrabbleGanador control = loader.getController();
             control.recibirJugadores(this.jugadores);
             // cierra la ventana de juego y abre la de puntajes
             currentStage.close();

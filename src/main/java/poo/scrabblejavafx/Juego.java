@@ -116,33 +116,6 @@ public class Juego {
 
 
     /**
-     * Método el cual es usado para sumar los puntos de los jugadores y meterlos en sus vectores respectivos, cuando la pila se encuentra vacia y nadie puede jugar más.
-     */
-    /*
-    public void sumarPuntosPilaEnCero() {
-        Jugador ganador = null;
-        int sumaMenorDePuntos = 1000000; //Un número arbitrario grande para sacar el menor
-        for (Jugador jugador : getJugadores()) {
-            if (jugador.getFichasEnMano().getsumadefichas() < sumaMenorDePuntos) {
-                ganador = jugador;
-                sumaMenorDePuntos = jugador.getFichasEnMano().getsumadefichas();
-            }
-        }
-        ganador.setGanador(true);
-
-        // se vuelven a recorrer, esta vez ya sabiendo el que tenía la cantidad menor de puntos
-        for (Jugador jugador : getJugadores()) {
-            int puntos = jugador.getFichasEnMano().getsumadefichas();
-            if (!jugador.isGanador()) {
-                puntos *= -1;
-            }
-            jugador.setPuntos(puntos);
-            jugador.setPuntosTotales(jugador.getPuntosTotales() + puntos);
-        }
-    }
-*/
-
-    /**
      * Método el cual es usado para agarrar las fichas de los jugadores para el soporte.
      */
     public void agarrarfichas(){
@@ -172,10 +145,11 @@ public class Juego {
 
     /**
      * Metodo que vuelve a llenar el atril del jugador posterior a realizar una jugada
-     * @param jugador jugador el cual su atril es incompleto
+     * @param jugador jugador el cual su atril se encuentra incompleto
      */
     public void refillearFichas(Jugador jugador){
-        while (jugador.getFichasEnMano().getFichas().size() < 7){
+        //modificado para que no intente hacer "refill" al jugador si ya se acabó la pila
+        while (jugador.getFichasEnMano().getFichas().size() < 7 && this.getTablero().getFichas().getStackSize() > 0){
                 jugador.agregarFicha(tablero.getFichas().agarrarficha());
         }
     }
@@ -208,21 +182,24 @@ public class Juego {
     /**
      * Metodo el cual recibe la cantidad de fichas que el jugador desea cambiar y se le devolvera la misma cantidad
      * @param jugador jugador del turno actual que desea cambiar fichas
-     * @param indices vector de ints que contiene los indices de las fichas a cambiar.
+     * @param fichas vector de ints que contiene los indices de las fichas a cambiar.
      */
 
-    public void cambiarFichas(Jugador jugador,Vector<Integer> indices){
-        int tam = indices.size();
+    public void cambiarFichas(Jugador jugador, Vector<Ficha> fichas) {
+        int tam = fichas.size();
 
-        for(int indice : indices){
-            tablero.getFichas().ingresarFicha(jugador.getFichasEnMano().getficha(indice));
-            jugador.getFichasEnMano().eliminarFicha(indice);
+        for (Ficha ficha : fichas) {
+            Ficha fichaRemovida = jugador.getFichasEnMano().sacarFicha(ficha);
 
+            tablero.getFichas().ingresarFicha(fichaRemovida);
         }
 
         Collections.shuffle(tablero.getFichas().getStack());
 
-        for(int i=0;i<tam;i++) jugador.agregarFicha(tablero.getFichas().agarrarficha());
+        for (int i = 0; i < tam; i++) {
+            // Add a tile from the board's tile stack to the player's hand
+            jugador.agregarFicha(tablero.getFichas().agarrarficha());
+        }
     }
 
     /**

@@ -7,13 +7,19 @@ import java.util.Vector;
  */
 
 public class Jugada {
+
     private Vector<Ficha> jugada;
+
     private Diccionario diccionario;
-    //private Vector<myTuple> palabrasEnJugada; //TODO: Hay que definir como almacenar las fichas de la jugada
+
 
     private Vector<Pair<Integer,Integer>> posiciones;
 
-
+    /**
+     * Constructor de la clase Jugada
+     * @param lista lista de las fichas que consiste la jugada
+     * @param diccionario diccionario que almacena todas las fichas
+     */
     public Jugada(Vector<Ficha> lista, Diccionario diccionario) {
         this.jugada = lista;
         this.diccionario = diccionario;
@@ -66,26 +72,6 @@ public class Jugada {
 
     }
 
-
-
-
-    /**
-     * Método para calcular el valor de una jugada según los puntos de las fichas.
-     * @return un valor entero que representa los puntos de la jugada calculada.
-     */
-
-    public int valorJugada(){
-        int cont = 0;
-        if(this.jugadavalida()){
-            for(int i=0;i<this.jugada.size();i++){
-                Ficha ficha = this.jugada.get(i);
-                cont+=ficha.getPuntaje();
-
-            }
-        }
-        return cont;
-    }
-
     /**
      * Método el cual obtiene la ficha en una posición deseada de la jugada.
      * @param x recibe el índice de la ficha en la jugada que se desea obtener.
@@ -96,6 +82,11 @@ public class Jugada {
 
     }
 
+    /**
+     * Metodo el cual encuentra jugadas que contegan fichas nuevas
+     * @return un true si la jugada contiene una ficha nueva de lo contrario false
+     */
+
     public boolean encontrarNuevaletra(){
         for(Ficha fichas : jugada){
             if(!fichas.isEsta())return true;
@@ -103,18 +94,37 @@ public class Jugada {
         return false;
     }
 
+    /**
+     * Metodo que setea el atributo de posiciones a un vector de duplas de ints
+     * @param posiciones  duplas de ints refiriendose a los x y y de una matriz
+     */
+
     public void setPosiciones(Vector<Pair<Integer, Integer>> posiciones) {
         this.posiciones = posiciones;
     }
 
+    /**
+     * Metodo el cual retorna el atributo de posiciones
+     * @return un vector de duplas que se refieren a las posiciones de las fichas
+     */
     public Vector<Pair<Integer, Integer>> getPosiciones() {
         return posiciones;
     }
+
+    /**
+     * Metodo el cual devuelve la posicion de una ficha en especfico
+     * @param pos indice de la ficha deseada
+     * @return posicion de dicha ficha
+     */
 
     public Pair<Integer,Integer> obtenerPar(int pos){
         return posiciones.get(pos);
     }
 
+    /**
+     * Metodo el cual retorna el tamano de la jugada
+     * @return un numero refiriendose al tamano del vector de jugada
+     */
     public int obtenerTamano(){
         return  jugada.size();
     }

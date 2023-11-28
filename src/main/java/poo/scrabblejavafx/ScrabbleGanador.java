@@ -3,15 +3,10 @@ package poo.scrabblejavafx;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 
 import java.util.Vector;
 
@@ -19,7 +14,7 @@ import java.util.Vector;
  * Clase controladora para el form de la pantalla de ganadores. Es instanciada cuando un método dentro de la pantalla de juego
  * carga la pantalla de puntajes.
  */
-public class RummikubGanador {
+public class ScrabbleGanador {
 
     @FXML
     private Label titleLabel;

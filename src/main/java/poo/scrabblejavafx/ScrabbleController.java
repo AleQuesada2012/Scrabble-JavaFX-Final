@@ -103,7 +103,7 @@ public class ScrabbleController {
             // Se crea una nueva Stage (ventana) para la pantalla de juego
             Stage gameBoardStage = new Stage();
             gameBoardStage.setScene(gameBoardScene);
-            gameBoardStage.setTitle("Rummikub - Pantalla de Juego");
+            gameBoardStage.setTitle("Scrabble - Pantalla de Juego");
 
             // Se obtiene la referencia a la clase de control para la siguiente pantalla
             ScrabbleGameBoard control = loader.getController();

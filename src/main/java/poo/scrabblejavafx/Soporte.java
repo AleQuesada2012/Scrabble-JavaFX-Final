@@ -118,4 +118,11 @@ public class Soporte {
         }
         return cont;
     }
+
+    public Ficha sacarFicha(Ficha pos){
+        Ficha temp = pos;
+        this.fichas.remove(pos);
+
+        return temp;
+    }
 }

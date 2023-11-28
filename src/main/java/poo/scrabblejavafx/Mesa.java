@@ -209,15 +209,13 @@ public class Mesa {
     }
 
 
-
-    public
-    Boolean esvalido(int x, int y, Vector<Vector<Boolean>> visi) {
+    private  Boolean esvalido(int x, int y, Vector<Vector<Boolean>> visi) {
         return x >= 0 && x < 15 && y >= 0 && y < 15 && !visi.get(x).get(y);
     }
 
 
 
-    public  Pair<Ficha,Pair<Integer,Integer>> encontrarPrimeraFicha() {
+    private   Pair<Ficha,Pair<Integer,Integer>> encontrarPrimeraFicha() {
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < 15; j++) {
                 if (this.tablero[i][j] != null) {
@@ -231,7 +229,7 @@ public class Mesa {
         return null;
     }
 
-    public Vector<Pair<Integer, Integer>> vecinos(int x, int y) {
+    private Vector<Pair<Integer, Integer>> vecinos(int x, int y) {
         Vector<Pair<Integer, Integer>> moves = new Vector<>();
 
         moves.add(new Pair<>(x + 1, y));
@@ -243,7 +241,7 @@ public class Mesa {
     }
 
 
-    Vector<Pair<Integer,Integer>> obtenervecinos(int x, int j, Vector<Vector<Boolean>> visi) {
+    private Vector<Pair<Integer,Integer>> obtenervecinos(int x, int j, Vector<Vector<Boolean>> visi) {
         Vector<Pair<Integer,Integer>> vecinas = new Vector<>();
         Vector<Pair<Integer,Integer>> posibles = vecinos(x,j);
         for ( Pair<Integer,Integer> move: posibles) {
@@ -257,6 +255,10 @@ public class Mesa {
     }
 
 
+    /**
+     * Metodo envargado de verificar que todas las fichas esten conectadas
+     * @return true si todas las fichas estan conectadas false de lo contrario
+     */
     public boolean todasFichasConectadas() {
         Vector<Vector<Boolean>> visitadas = new Vector<>();
 
@@ -316,51 +318,49 @@ public class Mesa {
     }
 
 
-
-
-
     /**
      * Metodo que obtiene todas las jugadas nuevas en horizontal en el tablero
      * @return un vector el cual contiene todas las jugadas horizontales
      */
-    public Vector<Jugada> obtenerJugadas(){
+    public Vector<Jugada> obtenerJugadas() {
         Vector<Pair<Integer, Integer>> duplas = new Vector<>();
-        Vector<Jugada> jugadasNuevas =  new Vector<>();
+        Vector<Jugada> jugadasNuevas = new Vector<>();
         Vector<Ficha> fichas = new Vector<>();
+
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < 15; j++) {
-
                 if (tablero[i][j] != null) {
                     fichas.add(tablero[i][j]);
                     Pair<Integer, Integer> pos = new Pair<>(i, j);
                     duplas.add(pos);
-                }
-
-                else if (!fichas.isEmpty()) {
-                    Jugada posibleJugada = new Jugada(fichas, diccionario);
+                } else if (!fichas.isEmpty()) {
+                    // Create a copy of the fichas vector
+                    Vector<Ficha> fichasCopy = new Vector<>(fichas);
+                    Vector<Pair<Integer,Integer>> copiaDuplas = new Vector<>(duplas);
+                    Jugada posibleJugada = new Jugada(fichasCopy, diccionario);
                     if (posibleJugada.jugadavalida() && posibleJugada.encontrarNuevaletra()) {
-                        posibleJugada.setPosiciones(duplas);
+                        posibleJugada.setPosiciones(copiaDuplas);
                         jugadasNuevas.add(posibleJugada);
-
                     }
                     fichas.clear();
                     duplas.clear();
                 }
-
             }
             if (!fichas.isEmpty()) {
-                Jugada posibleJugada = new Jugada(fichas, diccionario);
+                // Create a copy of the fichas vector
+                Vector<Ficha> fichasCopy2 = new Vector<>(fichas);
+                Vector<Pair<Integer,Integer>> copiaDuplas2 = new Vector<>(duplas);
+                Jugada posibleJugada = new Jugada(fichasCopy2, diccionario);
                 if (posibleJugada.jugadavalida() && posibleJugada.encontrarNuevaletra()) {
-                    posibleJugada.setPosiciones(duplas);
+                    posibleJugada.setPosiciones(copiaDuplas2);
                     jugadasNuevas.add(posibleJugada);
                 }
                 fichas.clear();
                 duplas.clear();
             }
-
         }
-        return jugadasNuevas;
 
+        return jugadasNuevas;
     }
 
     /**
@@ -379,10 +379,12 @@ public class Mesa {
                     Pair<Integer, Integer> pos = new Pair<>(i, j);
                     duplas.add(pos);
                 }
-                else if (!fichas.isEmpty() && !duplas.isEmpty()) {
-                    Jugada posibleJugada = new Jugada(fichas, diccionario);
+                else if (!fichas.isEmpty()) {
+                    Vector<Ficha> copia = new Vector<>(fichas);
+                    Vector<Pair<Integer,Integer>> copiaDuplas = new Vector<>(duplas);
+                    Jugada posibleJugada = new Jugada(copia, diccionario);
                     if (posibleJugada.jugadavalida() && posibleJugada.encontrarNuevaletra()) {
-                        posibleJugada.setPosiciones(duplas);
+                        posibleJugada.setPosiciones(copiaDuplas);
                         jugadasNuevas.add(posibleJugada);
                     }
                     fichas.clear();
@@ -393,9 +395,11 @@ public class Mesa {
 
             }
             if (!fichas.isEmpty()&& !duplas.isEmpty()) {
-                Jugada posibleJugada = new Jugada(fichas, diccionario);
+                Vector<Ficha> copia2 = new Vector<>(fichas);
+                Vector<Pair<Integer,Integer>> copiaDuplas2 = new Vector<>(duplas);
+                Jugada posibleJugada = new Jugada(copia2, diccionario);
                 if (posibleJugada.jugadavalida() && posibleJugada.encontrarNuevaletra()) {
-                    posibleJugada.setPosiciones(duplas);
+                    posibleJugada.setPosiciones(copiaDuplas2);
                     jugadasNuevas.add(posibleJugada);
                 }
                 fichas.clear();
@@ -421,7 +425,7 @@ public class Mesa {
 
 
         for(int i=0;i<horziontales.size();i++) {
-            for(int j=0;j<horziontales.get(j).obtenerTamano();j++) {
+            for(int j=0;j<horziontales.get(i).obtenerTamano();j++) {
 
 
                 Pair<Integer, Integer> coordenadas = horziontales.get(i).obtenerPar(j);
@@ -438,6 +442,8 @@ public class Mesa {
 
                 if (casilla.equals("3W")) {
 
+                    cont+=horziontales.get(i).getFichaPos(j).getPuntaje();
+
                     multiplicador *= 3;
 
                     matrizFichas[x][y] = "";
@@ -449,6 +455,8 @@ public class Mesa {
 
                 }
                 if (casilla.equals("2W")) {
+
+                    cont+=horziontales.get(i).getFichaPos(j).getPuntaje();
                     multiplicador *= 2;
                     matrizFichas[x][y] = "";
 
@@ -469,7 +477,8 @@ public class Mesa {
 
 
         for(int i=0;i<Verticales.size();i++) {
-            for(int j=0;j<Verticales.get(j).obtenerTamano();j++) {
+            for(int j=0;j<Verticales.get(i).obtenerTamano();j++) {
+
                 Pair<Integer, Integer> coordenadas = Verticales.get(i).obtenerPar(j);
 
                 int x = coordenadas.getFirst();
@@ -478,9 +487,11 @@ public class Mesa {
 
                 String casilla = matrizFichas[x][y];
 
-                if (Objects.equals(casilla, "")) continue;
+                if (Objects.equals(casilla, ""))
+                    cont+=Verticales.get(i).getFichaPos(j).getPuntaje();
 
                 if (casilla.equals("3W")) {
+                    cont += Verticales.get(i).getFichaPos(j).getPuntaje();
 
                     multiplicador *= 3;
 
@@ -493,6 +504,8 @@ public class Mesa {
 
                 }
                 if (casilla.equals("2W")) {
+
+                    cont += Verticales.get(i).getFichaPos(j).getPuntaje();
                     multiplicador *= 2;
                     matrizFichas[x][y] = "";
 
@@ -514,6 +527,9 @@ public class Mesa {
 
         return res;
     }
+
+
+
 
     /**
      * Método para conocer si la matriz pertenece a la mesa está vacía.
