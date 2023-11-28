@@ -78,6 +78,7 @@ public class Mesa {
      */
 
     public boolean matrizValida() {
+        if(haySoloUna())return false;
         if (estaVacia()) {
             return true;
         }
@@ -567,6 +568,22 @@ public class Mesa {
         return contador;
     }
 
+    /**
+     * Metodo el cual me indica si solo hay una ficha en el tablero
+     * @return Ture si solo hay una ficha False de lo contrario
+     */
+    public boolean haySoloUna(){
+        int cont = 0;
+        for(int i=0;i<15;i++){
+            for(int j=0;j<15;j++){
+                if(this.tablero!=null){
+                    cont++;
+                }
+            }
+        }
+        return cont==1;
+    }
+
     public void imprimirmatriz() {
         for (Ficha[] row : this.tablero) {
             for (Ficha cell : row) {
@@ -577,17 +594,7 @@ public class Mesa {
         }
     }
 
-    /**
-     * Método el cual obtiene una ficha en una posición deseada de la matriz.
-     *
-     * @param x fila de la matriz.
-     * @param y columna de la matriz.
-     * @return la ficha en la posicion deseada.
-     */
 
-    public Ficha getFichaEnXY(int x, int y) {
-        return this.tablero[x][y];
-    }
 
 
 

@@ -249,6 +249,7 @@ public class ScrabbleGameBoard {
                     if(!fichasPorCambiar.contains(fichaEnEstaPosicion)) {
                         fichasPorCambiar.add(fichaEnEstaPosicion);
                         System.out.println("ficha seleccionada para cambiar: en posición " + indiceOriginal);
+                        System.out.println("cantidad de fichas por cambiar " + fichasPorCambiar.size());
                     }
                 }
             }
@@ -617,6 +618,11 @@ public class ScrabbleGameBoard {
                     // se revisa si el jugador tiene menos de 7 fichas, en ese caso, se rellena su soporte hasta que tenga esa cantidad
                     partida.refillearFichas(jugadorActual);
 
+                    if (!jugadoresEnTurnoFinal.isEmpty()) {
+                        jugadoresEnTurnoFinal.clear(); // si se habían saltado varios turnos pero un jugador logró una jugada, se reinicia el contador
+                    }
+
+
                     //cantidadPreviaDeFichas = jugadorActual.cantFichas(); // se usa para validar que no salte de turno "validando el juego" sin agregar algo.
 
                     int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
@@ -637,7 +643,9 @@ public class ScrabbleGameBoard {
             showErrorMessage("La disposición del tablero no era válida. Se le devolvieron sus fichas y se pasó al siguiente jugador.");
             partida.getTemporalMesa().restaurarFichas(jugadorActual);
             partida.getTemporalMesa().copiarMesa(partida.getTablero());
-
+            if (!jugadoresEnTurnoFinal.isEmpty()) {
+                jugadoresEnTurnoFinal.clear(); // si se habían saltado varios turnos pero un jugador logró una jugada, se reinicia el contador
+            }
             //TODO cambios respecto al rummikub: aquí sí se tiene que pasar al siguiente jugador
             int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
             primerJugadorIndex = indiceSigJugador;

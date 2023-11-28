@@ -29,6 +29,9 @@ public class Pila{
         crearFichasBarajadas();
     }
 
+    /**
+     * Metodo el cual inicia las cantidades de letras
+     */
     public void iniciarcantidades() {
         totalDeLetras.add(12);   // a
         totalDeLetras.add(2);    // b
@@ -105,6 +108,10 @@ public class Pila{
         return aAsignar;
     }
 
+    /**
+     * Metodo el cual ingresa una ficha en la pila
+     * @param ficha ficha la cual se desea ingresar
+     */
     public void ingresarFicha(Ficha ficha){
         fichasBarajadas.add(ficha);
     }

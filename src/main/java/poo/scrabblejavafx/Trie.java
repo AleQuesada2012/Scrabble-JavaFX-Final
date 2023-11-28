@@ -27,6 +27,11 @@ class Trie {
 
     public Trie() { root = new vertex('!'); }
 
+
+    /**
+     * Metodo el cual ingresa un string en el arbol
+     * @param word string que se desea introducir
+     */
     public void insert(String word) {
         vertex cur = root;
         for (int i = 0; i < word.length(); ++i) {
@@ -39,6 +44,11 @@ class Trie {
         cur.exist = true;
     }
 
+    /**
+     * Metodo el cual busca en el arbol una palabra
+     * @param word string el cual se desea buscar
+     * @return True si se encuentra el string False de lo contrario
+     */
     public Boolean search(String word) {
         vertex cur = root;
         for (int i = 0; i < word.length(); ++i) {

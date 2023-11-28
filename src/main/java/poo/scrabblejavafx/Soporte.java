@@ -11,7 +11,6 @@ public class Soporte {
 
     private  Vector<Ficha>fichas;
 
-    private  int cantFichas;
 
     /**
      * Constructor por defecto de la clase Soporte la cual crea una mano vacía de el jugador.
@@ -50,16 +49,10 @@ public class Soporte {
      * @return un valor entero que representa la cantidad de fichas en la mano del jugador.
      */
     public int getCantfichas() {
-        return cantFichas;
+        return fichas.size();
     }
 
-    /**
-     * Método para sobreescribir el valor del atributo relacionado a la cantidad de fichas del jugador.
-     * @param cantfichas un entero mayor o igual que 0 siendo este la cantidad actual de fichas en la mano.
-     */
-    public void setCantfichas(int cantfichas) {
-        this.cantFichas = cantfichas;
-    }
+
 
     /**
      * Método usado para dar la suma de las fichas de un jugador al final de la partida.
@@ -72,13 +65,10 @@ public class Soporte {
      */
     public void ingresarficha(Ficha ficha){
         fichas.add(ficha);
-        cantFichas++;
+
     }
 
-    public void eliminarFicha(int pos ){
-        fichas.remove(pos);
-        cantFichas--;
-    }
+
 
     /**
      * se utiliza para denotar que una ficha dentro de la mano del jugador fue utilizada en una jugada válida. Se encarga
@@ -87,7 +77,7 @@ public class Soporte {
      */
     public void usarficha(Ficha ficha){
         fichas.remove(ficha);
-        cantFichas--;
+
     }
 
     /**
@@ -110,6 +100,10 @@ public class Soporte {
         }
     }
 
+    /**
+     * Metodo El cual retorna el total de puntos que equivale una jugada
+     * @return el valor del conjunto de fichas
+     */
     public int getsumadefichas() {
        int cont = 0;
         for(int i=0;i<fichas.size();i++){
@@ -119,6 +113,11 @@ public class Soporte {
         return cont;
     }
 
+    /**
+     * Metodo El cual saca una ficha del soporte y la elimina
+     * @param pos La ficha seleccionada
+     * @return La ficha la cual fue seleccionada
+     */
     public Ficha sacarFicha(Ficha pos){
         Ficha temp = pos;
         this.fichas.remove(pos);

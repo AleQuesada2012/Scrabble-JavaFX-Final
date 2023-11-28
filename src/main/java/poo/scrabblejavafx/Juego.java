@@ -60,7 +60,7 @@ public class Juego {
 
         for (int i = 0; i < this.jugadores.size(); i++) {
             Jugador jugador = this.jugadores.get(i);
-            //jugador.agregarFicha(tablero.agarrarpila());
+
             jugador.agregarFicha(tablero.getFichas().agarrarficha()); // ya con esto no debería asignar nulo nunca
 
             for (Ficha ficha : jugador.getFichasEnMano().getFichas()) {
@@ -101,7 +101,7 @@ public class Juego {
             else {
                 // valida si el caso de finalización es el primero: cuando todos "saltan" de turno
                 int puntos = jugador.getFichasEnMano().getsumadefichas();
-                jugador.setPuntosTotales(jugador.getPuntosTotales()  + (jugador.getFichasEnMano().getsumadefichas() * -1));
+                jugador.setPuntosTotales(jugador.getPuntosTotales()  + (puntos * (-1)));
                 cont += puntos;
 
             }
@@ -218,6 +218,11 @@ public class Juego {
         return this.jugadores;
     }
 
+
+    /**
+     * Metodo El cual obtiene el diccionario del juego
+     * @return Diccionario del juego
+     */
     public Diccionario getDiccionario() {
         return diccionario;
     }
