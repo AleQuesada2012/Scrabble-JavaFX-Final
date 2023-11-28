@@ -22,8 +22,8 @@ public class MainApplication extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("RummikubStartScreen.fxml"));
-        primaryStage.setTitle("Rummikub - Pantalla de Inicio");
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("ScrabbleStartScreen.fxml"));
+        primaryStage.setTitle("Scrabble - Pantalla de Inicio");
         primaryStage.setScene(new Scene(fxmlLoader.load(), 450, 400));
         primaryStage.show();
     }

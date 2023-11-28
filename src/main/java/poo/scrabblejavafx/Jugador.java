@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class Jugador {
     private String Nombre;
-    private int puntos;
+    private int puntos = 0;
     private Soporte fichasEnMano;
     private boolean puedoempezar;
     private boolean ganador;
@@ -43,7 +43,7 @@ public class Jugador {
      * @param puntosTotales1 corresponde al puntaje acual del jugador.
      */
     public void setPuntosTotales(int puntosTotales1) {
-        puntos= puntosTotales1;
+        puntos+=puntosTotales1;
     }
 
     /**
@@ -125,7 +125,7 @@ public class Jugador {
     public void printFichas() {
         for (int i = 0; i < getFichasEnMano().getCantfichas(); i++) {
             Ficha fichaTemp = getFichasEnMano().getficha(i);
-            System.out.println(i + ":" + " " + fichaTemp.getLetra());
+            System.out.println(i + ":" + " " + fichaTemp.getLetra() + fichaTemp.getPuntaje());
         }
     }
 

@@ -71,6 +71,7 @@ public class Ficha {
         if(this.letra=='f')this.puntaje = 4;
         if(this.letra=='g')this.puntaje = 2;
         if(this.letra=='h')this.puntaje = 4;
+        if (this.letra=='i')this.puntaje = 1;
         if(this.letra=='j')this.puntaje = 8;
         if(this.letra=='k')this.puntaje = 8;
         if(this.letra=='l')this.puntaje = 1;
@@ -86,6 +87,7 @@ public class Ficha {
         if(this.letra=='v')this.puntaje = 4;
         if(this.letra=='x')this.puntaje = 8;
         if(this.letra=='y')this.puntaje = 4;
+        if(this.letra=='w')this.puntaje = 8;
         if(this.letra=='z')this.puntaje = 10;
         if(this.letra=='ñ')this.puntaje = 8;
         if(this.letra=='*')this.puntaje = 0;

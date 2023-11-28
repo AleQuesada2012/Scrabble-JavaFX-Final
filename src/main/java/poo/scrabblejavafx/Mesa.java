@@ -44,6 +44,7 @@ public class Mesa {
     public Mesa(int x,Diccionario diccionario) {
         this.diccionario = diccionario;
         tablero = new Ficha[15][15];
+        llenarMatriz();
     }
 
     /**
@@ -423,11 +424,11 @@ public class Mesa {
             for(int j=0;j<horziontales.get(j).obtenerTamano();j++) {
 
 
-                Pair<Integer, Integer> calvo = horziontales.get(i).obtenerPar(j); //TODO CAMBIAR CALVO PORQUE SI NO ME MATO
+                Pair<Integer, Integer> coordenadas = horziontales.get(i).obtenerPar(j);
 
-                int x = calvo.getFirst();
+                int x = coordenadas.getFirst();
 
-                int y = calvo.getSecond();
+                int y = coordenadas.getSecond();
 
                 String casilla = matrizFichas[x][y];
 
@@ -469,11 +470,11 @@ public class Mesa {
 
         for(int i=0;i<Verticales.size();i++) {
             for(int j=0;j<Verticales.get(j).obtenerTamano();j++) {
-                Pair<Integer, Integer> calvo = Verticales.get(i).obtenerPar(j); //TODO CAMBIAR CALVO PORQUE SI NO ME MATO
+                Pair<Integer, Integer> coordenadas = Verticales.get(i).obtenerPar(j);
 
-                int x = calvo.getFirst();
+                int x = coordenadas.getFirst();
 
-                int y = calvo.getSecond();
+                int y = coordenadas.getSecond();
 
                 String casilla = matrizFichas[x][y];
 
@@ -511,7 +512,7 @@ public class Mesa {
         }
 
 
-        return res; //TODO cambiar retorno (solo tiene esto para que no dé error)
+        return res;
     }
 
     /**
@@ -679,7 +680,7 @@ public class Mesa {
 
     /**
      * Metodo que verifica que la jugada principal se realizara en la posicion de la estrella.
-     * @return
+     * @return verdadero si hay una ficha colocada en la casilla central, falso en caso contrario.
      */
     public boolean esta77(){
             if (tablero[7][7] != null) {

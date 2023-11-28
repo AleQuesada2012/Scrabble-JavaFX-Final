@@ -20,7 +20,8 @@ import javafx.stage.Stage;
 import java.util.Vector;
 
 
-public class RummikubGameBoard {
+public class ScrabbleGameBoard {
+
 
 
     private String nombre1;
@@ -54,6 +55,9 @@ public class RummikubGameBoard {
     private String[][] copiaPotenciadasPrevias;
 
     private int cantidadPreviaDeFichas;
+
+    private boolean cambiandoFichas = false;
+
     @FXML
     private AnchorPane rootPane;
 
@@ -74,6 +78,9 @@ public class RummikubGameBoard {
 
     @FXML
     private Button endTurnButton;
+
+    @FXML
+    private Button RestoreTurn;
 
     @FXML
     private VBox mainVBox;
@@ -117,7 +124,7 @@ public class RummikubGameBoard {
                 botonesTablero[row][col].setFont(new Font(16));
                 botonesTablero[row][col].setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
                 // Define el método encargado de manejar el evento de haber dado click en el
-                // TODO botonesTablero[row][col].setOnAction(e -> manejarClickFichaMatriz(e));
+                botonesTablero[row][col].setOnAction(e -> manejarClickFichaMatriz(e));
 
                 gameGrid.add(botonesTablero[row][col], col, row); // Añade el botón al grid
                 //GridPane.setRowIndex(button, row);
@@ -143,7 +150,7 @@ public class RummikubGameBoard {
                 button.setText("");
                 button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
                 //button.setFont(new Font(14));
-                // TODO button.setOnAction(e -> manejarClickFichaSoporte(e));
+                button.setOnAction(e -> manejarClickFichaSoporte(e));
                 soporteGridPane.add(button, j, i);
                 posSoporte ++;
             }
@@ -155,7 +162,7 @@ public class RummikubGameBoard {
      * a todos los botones del tablero, de modo que no se necesita crear un método único para cada botón.
      *  el click realizado por el jugador. Se utiliza para obtener la referencia al botón que fue presionado.
      */
-    /*
+
     private void manejarClickFichaMatriz(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
         int[] rowIndex = (int[]) clickedButton.getUserData();
@@ -166,57 +173,24 @@ public class RummikubGameBoard {
             System.out.println("entró a que el botón no tiene ficha");
             if (fichaActual != null && vieneDelSoporte) {
                 System.out.println("entró a que la ficha no es nula y viene del soporte");
-                // quiere decir que vamos a sacar una ficha del soporte y ponerla en el boton que se hizo click
-                // TODO partida.getTemporalMesa().ingresarFicha(fichaActual, row, col, jugadorActual); // ya coloque la ficha
+                cambiandoFichas = false;
+                //TODO setear el texto del botón de cambio de fichas al default (cambiar ficha)
+                //quiere decir que vamos a sacar una ficha del soporte y ponerla en el boton que se hizo click
+                partida.getTemporalMesa().ingresarFicha(fichaActual, row, col, jugadorActual); // ya coloque la ficha
                 fichaActual = null;
                 indiceSoporte = 0;
                 vieneDelSoporte = false;
+                int[] datosBoton = (int[]) clickedButton.getUserData();
+                datosBoton[2] = 1; //ahora el botón del tablero si tiene ficha.
+
+                // no hace falta a los botones previos (los del soporte) ponerles si contienen o no ficha porque al llamar este método se reconfigura.
                 this.setSoporteInicial(jugadorActual);
                 this.cargarTableroTemporal();
-            }
-            if (fichaActual != null && !vieneDelSoporte) {
-                // entra cuando lo que se quiere hacer es mover una ficha del tablero a la que ya se le hizo click
-                if (jugadorActual.puedoEmpezar() && botonPrevio != null) {
-
-                    // restaura que el boton anterior ya no contenga que si tiene ficha.
-                    int[] datosBoton = (int[]) botonPrevio.getUserData();
-                    datosBoton[2] = 0; // ahora el boton previo no deberia tener ficha
-                    botonPrevio.setUserData(datosBoton);
-
-                    clickedButton.setStyle(botonPrevio.getStyle());
-                    clickedButton.setText(botonPrevio.getText());// copia la apariencia del boton anterior
-                    //
-                    datosBoton = (int[]) clickedButton.getUserData();
-                    datosBoton[2] = 1; //ahora el boton nuevo si tiene ficha.
-
-                    int[] datosBtnPrevio = (int[]) botonPrevio.getUserData();
-                    //TODO partida.getTemporalMesa().reacomodarFicha(datosBtnPrevio[0], datosBtnPrevio[1], datosBoton[0], datosBoton[1]);
-
-                    botonPrevio.setStyle("");
-                    botonPrevio.setText("");
-
-                    cargarTableroTemporal();
-                    // despues de reubicar la ficha, se pone el valor de la ficha actual en nulo, y de las coordenadas en el valor de conveniencia
-                    fichaActual = null;
-                    botonPrevio = null;
-                } else {
-                    showErrorMessage("No puede manipular las fichas del tablero hasta que haga su primera jugada.");
-                }
             }
         }
         else {
             if (fichaActual == null) {
-                System.out.println("entra a que la ficha actual es nula y el boton si tiene ficha");
-                // no hace falta validar si la seleccion es del soporte porque el metodo se llama solo si se presiona un boton en el tablero
-                if (jugadorActual.puedoEmpezar() && botonPrevio == null) {
-                    System.out.println("entra a cuando saca la ficha actual del boton cliqueado");
-                    fichaActual = partida.getTemporalMesa().getFichaEnXY(row, col);
-                    //TODO System.out.println("Ficha Actual: " + fichaActual.getNum() + fichaActual.getColor());
-                    botonPrevio = clickedButton;
-                }
-                else {
-                    showErrorMessage("No puede manipular fichas del tablero hasta hacer una jugada de 30 puntos.");
-                }
+                showErrorMessage("No puede manipular fichas del tablero. Si desea corregir un error debe presionar Restaurar Jugada.");
             }
         }
 
@@ -228,10 +202,9 @@ public class RummikubGameBoard {
      * a todos los botones del soporte, de modo que no se necesita crear un método único para cada botón.
      *  el click realizado por el jugador. Se utiliza para obtener la referencia al botón que fue presionado.
      */
-    /*
+
     private void manejarClickFichaSoporte(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
-
 
         int[] rowIndex = (int[]) clickedButton.getUserData();
         int row = rowIndex[0];
@@ -242,21 +215,31 @@ public class RummikubGameBoard {
         if(fichaActual == null) {
             //System.out.println("entro a que ficha actual no es nula");
             if (tieneFicha == 1) {
-                System.out.println("entró a que el botón clicado sí tiene ficha");
-                this.fichaActual = jugadorActual.escogerficha(indiceOriginal);
-                // TODO System.out.println("ficha Actual: " + fichaActual.getNum() + fichaActual.getColor());
-                indiceSoporte = indiceOriginal;
-                vieneDelSoporte = true;
-                this.setSoporteInicial(jugadorActual);
-                this.cargarTableroTemporal();
+                if (!cambiandoFichas){
+                    System.out.println("entró a que el botón clicado sí tiene ficha");
+                    this.fichaActual = jugadorActual.escogerficha(indiceOriginal);
+                    System.out.println("ficha Actual: " + fichaActual.getLetra() + fichaActual.getPuntaje());
+                    indiceSoporte = indiceOriginal;
+                    vieneDelSoporte = true;
+                    this.setSoporteInicial(jugadorActual);
+                    this.cargarTableroTemporal();
+                }
+                else {
+                    // aquí es donde se entra cuando se quiere cambiar ficha
+                }
             }
         }
         else {
             //System.out.println("entra a que la ficha actual no era nula y va a cambiar la referencia");
             if (vieneDelSoporte && tieneFicha == 1) {
-                // lo que quiere hacer aqui es escoger otra ficha del soporte
-                this.fichaActual = jugadorActual.escogerficha(indiceOriginal);
-                //System.out.println("ficha actual: " + fichaActual.getNum() + fichaActual.getColor());
+                if(!cambiandoFichas) {
+                    // lo que quiere hacer aqui es escoger otra ficha del soporte
+                    this.fichaActual = jugadorActual.escogerficha(indiceOriginal);
+                    //System.out.println("ficha actual: " + fichaActual.getNum() + fichaActual.getColor());
+                }
+                else {
+                    //TODO: agregar la lógica de cambiar fichas
+                }
             } else if (vieneDelSoporte && tieneFicha == 0) {
                 this.fichaActual = null;
             }
@@ -324,39 +307,6 @@ public class RummikubGameBoard {
         }
     }
 
-    /**
-     * Método llamado por la pantalla de puntajes cuando el jugador escoge jugar otra partida. Reutiliza las instancias
-     * de los jugadores ya que estos almacenan su "historial" de puntos.
-     * @param jugadores un vector con los jugadores existentes. Se usa un vector ya que no es una cantidad exacta.
-     */
-    public void volverAJugar(Vector<Jugador> jugadores) {
-        this.jugadores = jugadores;
-        this.partida = new Juego(); // se reinicia
-        for (Jugador jugador: jugadores) {
-            jugador.reestablecerJugador();
-            jugador.setFichasEnMano();
-            this.partida.agregarjugador(jugador);
-        }
-        // se realiza el mismo proceso de inicialización para jugar una nueva partida
-        primerJugadorIndex = partida.determinarOrden();
-        Jugador primerJugador = partida.getJugadores().get(primerJugadorIndex);
-        this.jugadorActual = primerJugador;
-        System.out.println(primerJugador); // para depurar y ver si se crea el jugador correctamente
-        partida.agarrarfichas();
-
-        boolean gameOver = false;
-        turnoActual = 1;
-        pilaActual = partida.getTablero().getFichas().getStackSize();
-        fichaActual = null;
-        //coordenadasFicha = new int[]{-1, -1};
-        botonPrevio = null;
-        currentPlayerLabel.setText("Jugando: " + primerJugador.getNombre());
-        setSoporteInicial(primerJugador);
-        System.out.println("llega a setSoporte con el jugador: " + jugadorActual);
-        // TODO cargarTableroTemporal();
-        turnLabel.setText("Turno: " + turnoActual);
-        drawTileButton.setText("Tomar ficha (" + pilaActual + ")");
-    }
 
     /**
      * Método aislado del flujo principal del juego para evitar hacerlo un bloque muy grande y perder legibilidad.
@@ -469,7 +419,7 @@ public class RummikubGameBoard {
 
     private void cargarTableroTemporal() {
         Mesa tableroTemporal = partida.getTemporalMesa(); // matriz de fichas
-        String[][] powerUps = tableroTemporal.getMatrizFichas(); // matriz de casillas potenciadas
+        String[][] powerUps = partida.getTablero().getMatrizFichas(); // matriz de casillas potenciadas
         System.out.println("Tablero temporal: ");
         tableroTemporal.imprimirmatriz();
         int filaMesa = 0;
@@ -522,7 +472,7 @@ public class RummikubGameBoard {
 
     private void cargarTableroValido() {
         Mesa tableroValido = partida.getTablero(); // matriz de fichas
-        String[][] powerUps = tableroValido.getMatrizFichas(); // matriz de casillas potenciadas
+        String[][] powerUps = partida.getTablero().getMatrizFichas(); // matriz de casillas potenciadas
         System.out.println("Tablero temporal: ");
         tableroValido.imprimirmatriz();
         int filaMesa = 0;
@@ -585,20 +535,117 @@ public class RummikubGameBoard {
     }
 
     /**
-     * Método para el manejo de clicks sobre el botón "Validar Turno". Es invocado automáticamente.
+     * Método para el manejo de clicks sobre el botón "Validar Jugada". Es invocado automáticamente.
      */
+    @FXML private void manejarBtnValidarJugada() {
+        fichaActual = null;
+        botonPrevio = null;
 
+        if (partida.getTemporalMesa().estaVacia()) {
+            showErrorMessage("El tablero de juego está vacío. Si desea pasar turno, presione el botón indicado.");
+        }
+
+        else if (partida.getTemporalMesa().matrizValida()) {
+            if (!partida.seRealizo) {
+                if (partida.getTemporalMesa().esta77()) {
+                    jugadorActual.setPuntosTotales(partida.getTemporalMesa().calcularValor());
+                    partida.seRealizo = true;
+
+                    partida.getTablero().copiarMesa(partida.getTemporalMesa()); //TODO: revisar que las potenciadas se cambien bien
+                    partida.getTablero().sonParteDe();
+
+                    // se revisa si el jugador tiene menos de 7 fichas, en ese caso, se rellena su soporte hasta que tenga esa cantidad
+                    partida.refillearFichas(jugadorActual);
+
+                    int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
+                    primerJugadorIndex = indiceSigJugador;
+                    jugadorActual = partida.getJugadores().get(primerJugadorIndex);
+                    cantidadPreviaDeFichas = partida.getTablero().getCantFichas();
+
+                    turnoActual++;
+                    turnLabel.setText("Turno: " + turnoActual);
+                    currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
+
+                    cargarTableroValido();
+                    setSoporteInicial(jugadorActual);
+
+                    if (!jugadoresEnTurnoFinal.isEmpty()) {
+                        jugadoresEnTurnoFinal.clear();
+                    }
+
+                }
+                else {
+                    showErrorMessage("Por favor coloque la primera jugada en el centro del tablero. Si no tiene jugada presione pasar de turno.");
+                }
+            }
+            else {
+                partida.getTablero().copiarMesa(partida.getTemporalMesa()); //TODO: revisar que las potenciadas se cambien bien
+                partida.getTablero().sonParteDe();
+
+                // se revisa si el jugador tiene menos de 7 fichas, en ese caso, se rellena su soporte hasta que tenga esa cantidad
+                partida.refillearFichas(jugadorActual);
+
+                cantidadPreviaDeFichas = partida.getTablero().getCantFichas();
+
+                int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
+                primerJugadorIndex = indiceSigJugador;
+                jugadorActual = partida.getJugadores().get(primerJugadorIndex);
+
+                turnoActual++;
+                turnLabel.setText("Turno: " + turnoActual);
+                currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
+
+                cargarTableroValido();
+                setSoporteInicial(jugadorActual);
+            }
+        }
+        else {
+            showErrorMessage("La disposición del tablero no era válida. Se le devolvieron sus fichas y se pasó al siguiente jugador.");
+            partida.getTemporalMesa().restaurarFichas(jugadorActual);
+            partida.getTemporalMesa().copiarMesa(partida.getTablero());
+
+            //TODO cambios respecto al rummikub: aquí sí se tiene que pasar al siguiente jugador
+            int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
+            primerJugadorIndex = indiceSigJugador;
+            jugadorActual = partida.getJugadores().get(primerJugadorIndex);
+            setSoporteInicial(jugadorActual);
+            cargarTableroTemporal();
+
+            turnoActual ++;
+            turnLabel.setText("Turno: " + turnoActual);
+            currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
+
+        }
+    }
+
+    /**
+     * Método para el manejo de clicks sobre el botón "Pasar Turno". Es invocado automáticamente.
+     */
     //TODO renombrar el método para que sea pasar turno, el de validar cumple más funciones
     @FXML
-    private void manejarBotonValidarTurno() {
-        int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
-        primerJugadorIndex = indiceSigJugador;
-        jugadorActual = partida.getJugadores().get(primerJugadorIndex);
-        turnoActual++;
-        turnLabel.setText("Turno: " + turnoActual);
-        currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
+    private void manejarBtnPasarTurno() {
+        fichaActual = null;
+        partida.getTemporalMesa().restaurarFichas(jugadorActual);
+        //TODO: hacer que esto almacene los jugadores en un vector para que cuando las personas pasan turno se acabe el juego
+        jugadoresEnTurnoFinal.add(jugadorActual);
+        if (jugadoresEnTurnoFinal.size() >= jugadores.size()) {
+            partida.sumarPuntos();
+            terminarPartida();
+        }
+        else {
+            //jugadoresEnTurnoFinal.add(jugadorActual);
+            //después de agregar los que han saltado de turno, se pasa al siguiente jugador
+            int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
+            primerJugadorIndex = indiceSigJugador;
+            jugadorActual = partida.getJugadores().get(primerJugadorIndex);
 
-        setSoporteInicial(jugadorActual);
+            turnoActual++;
+            turnLabel.setText("Turno: " + turnoActual);
+            currentPlayerLabel.setText("Jugando: " + jugadorActual.getNombre());
+            cargarTableroTemporal();
+            setSoporteInicial(jugadorActual);
+        }
+
         /*
         fichaActual = null;
         botonPrevio = null;
@@ -653,12 +700,14 @@ public class RummikubGameBoard {
     /**
      * Método para el manejo de clicks sobre el botón "Tomar Ficha". Es invocado automáticamente.
      */
+    //TODO cambiar lógica porque no es de tomar ficha, es de cambiar fichas
     @FXML
     private void manejarBotonTomarFicha() {
         fichaActual = null;
         botonPrevio = null;
         if (partida.getTemporalMesa().matrizValida()) {
             Ficha tomada = partida.getTablero().agarrarpila();
+            this.pilaActual--;
             partida.getTemporalMesa().restaurarFichas(jugadorActual);
             partida.getTemporalMesa().copiarMesa(partida.getTablero()); // copia al temporal el válido porque se salta lo que se haya modificado al tomar ficha
 
@@ -718,22 +767,13 @@ public class RummikubGameBoard {
              */
         }
         else {
-            showErrorMessage("La disposición del tablero no era válida. Por favor reorganice sus fichas.");
-            partida.getTemporalMesa().restaurarFichas(jugadorActual);
-            partida.getTemporalMesa().copiarMesa(partida.getTablero());
-
-            //TODO cambios respecto al rummikub: aquí sí se tiene que pasar al siguiente jugador
-            int indiceSigJugador = (primerJugadorIndex + 1) % partida.getJugadores().size();
-            primerJugadorIndex = indiceSigJugador;
-            jugadorActual = partida.getJugadores().get(primerJugadorIndex);
-            setSoporteInicial(jugadorActual);
-            cargarTableroTemporal();
-
+            System.out.println("botón de cambiar fichas presionado cuando la matriz no es válida");
         }
     }
 
     @FXML
     private void manejarBotonRestaurar() {
+        fichaActual = null;
         System.out.println("click al botón para restaurar la jugada actual al inicio del turno.");
         partida.getTemporalMesa().restaurarFichas(jugadorActual);
         partida.getTemporalMesa().copiarMesa(partida.getTablero());
@@ -753,7 +793,7 @@ public class RummikubGameBoard {
 
         try {
             // Carga el archivo FXML para la pantalla de juego
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("RummikubGanador.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ScrabbleGanador.fxml"));
             Parent puntajesRoot = loader.load();
             Scene puntajesScene = new Scene(puntajesRoot);
 
@@ -761,11 +801,11 @@ public class RummikubGameBoard {
             // Crea un nuevo escenario para la pantalla de juego
             Stage gameBoardStage = new Stage();
             gameBoardStage.setScene(puntajesScene);
-            gameBoardStage.setTitle("Rummikub - Puntajes");
+            gameBoardStage.setTitle("Scrabble - Puntajes");
 
             // obtener la referencia a la clase de control para volver a la pantalla de juego
             RummikubGanador control = loader.getController();
-            // control.recibirJugadores(this.jugadores);
+            control.recibirJugadores(this.jugadores);
             // cierra la ventana de juego y abre la de puntajes
             currentStage.close();
             gameBoardStage.show();

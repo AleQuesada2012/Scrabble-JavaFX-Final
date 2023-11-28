@@ -15,7 +15,7 @@ import javafx.stage.Stage;
  * Clase de control para la pantalla inicial de la aplicación. En esta clase se declaran atributos privados que corresponden
  * a objetos de JavaFX dentro del "form", por ello existen sus etiquetas @FXML.
  */
-public class RummikubController {
+public class ScrabbleController {
     public Button startButton;
     @FXML
     private RadioButton player2RadioButton;
@@ -95,7 +95,7 @@ public class RummikubController {
 
         try {
             // Se carga el archivo FXML para el tablero de juego
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("RummikubGameBoard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ScrabbleGameBoard.fxml"));
             Parent gameBoardRoot = loader.load();
             Scene gameBoardScene = new Scene(gameBoardRoot);
 
@@ -106,7 +106,7 @@ public class RummikubController {
             gameBoardStage.setTitle("Rummikub - Pantalla de Juego");
 
             // Se obtiene la referencia a la clase de control para la siguiente pantalla
-            RummikubGameBoard control = loader.getController();
+            ScrabbleGameBoard control = loader.getController();
             control.initNombres(player1Name, player2Name, player3Name, player4Name); // pasa los parámetros de los nombres
 
             // Cierra la ventana actual y abre el tablero

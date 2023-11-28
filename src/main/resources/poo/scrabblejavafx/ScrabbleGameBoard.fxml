@@ -5,15 +5,15 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="poo.scrabblejavafx.RummikubGameBoard">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="poo.scrabblejavafx.ScrabbleGameBoard">
    <children>
       <HBox prefHeight="32.0" prefWidth="1280.0" spacing="100.0">
          <children>
             <Label fx:id="currentPlayerLabel" alignment="TOP_LEFT" prefHeight="17.0" prefWidth="151.0" text="Jugador Actual: playerName" textAlignment="CENTER" wrapText="true" />
             <Label fx:id="turnLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="151.0" text="Turno Actual: turnCounter" textAlignment="CENTER" wrapText="true" />
-            <Button fx:id="validateTurnButton" contentDisplay="CENTER" mnemonicParsing="false" style="-fx-content-display: center;" text="Validar turno" />
-            <Button fx:id="drawTileButton" mnemonicParsing="false" onAction="#manejarBotonTomarFicha" style="-fx-content-display: center;" text="Tomar ficha" wrapText="true" />
-            <Button fx:id="endTurnButton" layoutX="1020.0" layoutY="15.0" mnemonicParsing="false" onAction="#manejarBotonValidarTurno" style="-fx-content-display: center;" text="Pasar Turno" wrapText="true" />
+            <Button fx:id="validateTurnButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#manejarBtnValidarJugada" style="-fx-content-display: center;" text="Validar Jugada" />
+            <Button fx:id="drawTileButton" mnemonicParsing="false" onAction="#manejarBotonTomarFicha" style="-fx-content-display: center;" text="Cambiar Fichas" wrapText="true" />
+            <Button fx:id="endTurnButton" layoutX="1020.0" layoutY="15.0" mnemonicParsing="false" onAction="#manejarBtnPasarTurno" style="-fx-content-display: center;" text="Pasar Turno" wrapText="true" />
             <Button fx:id="RestoreTurn" layoutX="916.0" layoutY="15.0" mnemonicParsing="false" onAction="#manejarBotonRestaurar" style="-fx-content-display: center;" text="Restaurar Jugada" wrapText="true" />
          </children>
          <padding>

@@ -88,7 +88,7 @@ public class RummikubGanador {
      * TODO modificar esta clase de control para que solo imprima los jugadores que ganaron y se cierre la pantalla.
      * @param jugadores el vector que contiene las referencias a los jugadores instanciados.
      */
-    /*
+    
     public void recibirJugadores(Vector<Jugador> jugadores) {
         this.jugadores = jugadores;
 
@@ -105,7 +105,7 @@ public class RummikubGanador {
         }
 
 
-        generarFilas(rondasJugadas);
+        generarFilas();
         String nombreDelGanador = "";
         int puntajeMayor = -100000;
         for (Jugador jugador: jugadores) {
@@ -117,69 +117,35 @@ public class RummikubGanador {
         winnerLabel.setText("¡El ganador es: " + nombreDelGanador + " con " + puntajeMayor + " puntos!");
     }
 
-     */
+     
 
     /**
-     * Método para crear las filas en la tabla
-     * @param rondasJugadas
+     * Método para crear las filas en la tabla. Se modificó para que solo cree una tabla, ya que en esta variante de Scrabble
+     * no hay requisitos de jugar múltiples partidas en una sola ejecución
+     *
      */
-    /*
-    private void generarFilas(int rondasJugadas) {
-        String numRonda;
+    
+    private void generarFilas() {
+        String numRonda = "1";
         String puntaje1;
         String puntaje2;
         String puntaje3 = "-";
         String puntaje4 = "-";
 
         int cantJugadores = getJugadores().size();
-        for (int i = 0; i < rondasJugadas; i++) {
-            numRonda = Integer.toString(i + 1);
-            puntaje1 = jugadorEnIndice(0).getPuntosEnRondaN(i);
-            puntaje2 = jugadorEnIndice(1).getPuntosEnRondaN(i);
-            if (cantJugadores >= 3) {
-                puntaje3 = jugadorEnIndice(2).getPuntosEnRondaN(i);
-            }
-            if (cantJugadores == 4) {
-                puntaje4 = jugadorEnIndice(3).getPuntosEnRondaN(i);
-            }
-            System.out.println("ronda: " + (i+1) + ", P1: " + puntaje1 + ", P2: " + puntaje2 + ", P3: " + puntaje3 + ", P4: " + puntaje4);
-            data.add(new FilaPuntajes(numRonda, puntaje1, puntaje2, puntaje3, puntaje4));
+        puntaje1 = Integer.toString(jugadorEnIndice(0).getPuntosTotales());
+        puntaje2 = Integer.toString(jugadorEnIndice(1).getPuntosTotales());
+        if (cantJugadores >= 3) {
+            puntaje3 = Integer.toString(jugadorEnIndice(2).getPuntosTotales());
         }
+        if (cantJugadores == 4) {
+            puntaje4 = Integer.toString(jugadorEnIndice(3).getPuntosTotales());
+        }
+        System.out.println("ronda: " + (numRonda) + ", P1: " + puntaje1 + ", P2: " + puntaje2 + ", P3: " + puntaje3 + ", P4: " + puntaje4);
+        data.add(new FilaPuntajes(numRonda, puntaje1, puntaje2, puntaje3, puntaje4));
         tableView.setItems(data);
     }
 
-     */
-
-    /**
-     * Método para cerrar la pantalla de puntajes y volver a abrir la pantalla de juego
-     * Se encarga de cargar una nueva partida donde se van a ir acumulando los puntajes dentro de cada jugador
-     */
-    @FXML
-    public void jugarOtraVez() {
-        Stage currentStage = (Stage) botonJugarOtraVez.getScene().getWindow();
-
-        try {
-            // Carga el archivo FXML para la pantalla de juego
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("RummikubGameBoard.fxml"));
-            Parent gameBoardRoot = loader.load();
-            Scene gameBoardScene = new Scene(gameBoardRoot);
-
-
-            // Crea un nuevo escenario para la pantalla de juego
-            Stage gameBoardStage = new Stage();
-            gameBoardStage.setScene(gameBoardScene);
-            gameBoardStage.setTitle("Rummikub - Game Board");
-
-            // obtener la referencia a la clase de control para volver a la pantalla de juego
-            RummikubGameBoard control = loader.getController();
-            control.volverAJugar(this.jugadores);
-            // cierra la ventana actual y abre el tablero
-            currentStage.close();
-            gameBoardStage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Método que se llama automáticamente cuando se presiona el botón de "Terminar". Contiene las instrucciones necesarias
@@ -190,7 +156,7 @@ public class RummikubGanador {
         Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
         confirmationDialog.setTitle("Saliendo del juego...");
         confirmationDialog.setHeaderText("Gracias por jugar!");
-        confirmationDialog.setContentText("¿Está seguro que desea salir? se perderá el progreso de las partidas jugadas.");
+        confirmationDialog.setContentText("¿Está seguro que desea salir?");
 
         // Se agregan botones de confirmación y anulación del cierre del juego
         confirmationDialog.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);

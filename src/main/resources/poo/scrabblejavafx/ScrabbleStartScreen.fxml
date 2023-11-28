@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="poo.scrabblejavafx.RummikubController">
+<VBox alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="poo.scrabblejavafx.ScrabbleController">
     <Label text="Bienvenido al juego Rummikub! por favor seleccione la cantidad de jugadores:" />
 
     <RadioButton fx:id="player2RadioButton" onAction="#manejarSeleccionRadioButton" text="2 jugadores" textAlignment="CENTER">

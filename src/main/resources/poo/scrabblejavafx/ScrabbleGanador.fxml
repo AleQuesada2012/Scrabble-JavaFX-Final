@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="404.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="poo.rummikub.RummikubGanador">
+<VBox alignment="CENTER" prefHeight="400.0" prefWidth="404.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="poo.scrabblejavafx.RummikubGanador">
    <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Puntajes Finales" />
 
    <TableView fx:id="tableView" prefWidth="600.0">
@@ -24,7 +24,6 @@
    <Label fx:id="winnerLabel" style="-fx-font-size: 18; -fx-font-weight: bold;" text="El ganador es: P1" />
 
    <HBox alignment="CENTER" spacing="100.0">
-      <Button fx:id="botonJugarOtraVez" onAction="#jugarOtraVez" text="Volver a jugar" textAlignment="CENTER" />
       <Button fx:id="endGameButton" onAction="#terminarJuego" text="Terminar Juego" textAlignment="CENTER" />
       <padding>
          <Insets bottom="5.0" />

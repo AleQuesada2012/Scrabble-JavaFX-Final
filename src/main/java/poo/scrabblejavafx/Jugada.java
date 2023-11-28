@@ -39,21 +39,31 @@ public class Jugada {
         }
 
         String word = wordBuilder.toString();
+        if (word.length() < 2 || word.length() > 15) {
+            return false;
+        }
+
 
         if (tieneComodin) {
+            boolean posibleRespuesta = false;
             for (char letra = 'a'; letra <= 'z'; letra++) {
                 String wordWithWildcard = word.replace('*', letra);
                 if (diccionario.esvalida(wordWithWildcard)) {
-                    return true;
+                    posibleRespuesta = true;
                 }
             }
-            return false;
-        } else if (word.length() >= 2 && word.length() <= 15) {
-            return diccionario.esvalida(word);
-        } else {
-            return false;
+            String wordWithWildCard = word.replace('*', 'ñ');
+            if (diccionario.esvalida(wordWithWildCard)) {
+                posibleRespuesta = true;
+            }
+            return posibleRespuesta;
         }
+        else {
+            return diccionario.esvalida(word);
+        }
+
     }
+
 
 
 

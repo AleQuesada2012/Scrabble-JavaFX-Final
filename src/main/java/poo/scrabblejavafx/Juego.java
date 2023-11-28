@@ -101,7 +101,7 @@ public class Juego {
             else {
                 // valida si el caso de finalización es el primero: cuando todos "saltan" de turno
                 int puntos = jugador.getFichasEnMano().getsumadefichas();
-                jugador.setPuntosTotales(jugador.getPuntosTotales()  + (puntos * -1));
+                jugador.setPuntosTotales(jugador.getPuntosTotales()  + (jugador.getFichasEnMano().getsumadefichas() * -1));
                 cont += puntos;
 
             }
@@ -175,10 +175,9 @@ public class Juego {
      * @param jugador jugador el cual su atril es incompleto
      */
     public void refillearFichas(Jugador jugador){
-        while (jugador.getFichasEnMano().getFichas().size()<7){
+        while (jugador.getFichasEnMano().getFichas().size() < 7){
                 jugador.agregarFicha(tablero.getFichas().agarrarficha());
         }
-
     }
 
 
