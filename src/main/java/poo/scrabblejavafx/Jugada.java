@@ -31,6 +31,8 @@ public class Jugada {
 
         for (Ficha ficha : jugada) {
             if (ficha.getLetra() == '*') {
+                char letter = ficha.getLetra();
+                wordBuilder.append(letter);
                 tieneComodin = true;
             } else {
                 char letter = ficha.getLetra();
